@@ -484,11 +484,11 @@ def computation_ts(df, dic_df, index_var, group=False):
 
 	return dic_int
 
-def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
- 				name_continuous, group,var_continuous, df_melt):
+def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow,
+ 				  df_var, var_date,
+ 			  	  name_continuous, group,var_continuous, df_melt):
 	"""
 	"""
-
 	fig, axarr = plt.subplots(1, 2, figsize=(12, 8))
 	g = sns.lineplot(x=var_date,
 			 y=name_continuous,
@@ -530,7 +530,6 @@ def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
 					   'median_' + name_continuous,
 					   'sum_' + name_continuous
 					   ]
-
 		dic_range = {
 
 			'range_ts': "A" + str(LatestRow + 4) + ':' + str(range_1_letter) +
@@ -538,9 +537,7 @@ def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
 			'range_ts_g': "G" + str(LatestRow + 4) + ':Z' +
 			str(LatestRow + y_g.shape[0] + 6)
 		}
-
-# make graph with seaborn as save image to drive
-
+		# make graph with seaborn as save image to drive
 		dic_df = {
 			'df_ts': y.to_numpy().tolist(),
 			'df_tsg': y_g.to_numpy().tolist(),
@@ -548,15 +545,12 @@ def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
 			'header_tsg': list(y_g),
 			'range_ts': dic_range
 		}
-
 		cdr.add_data_to_spreadsheet(data=dic_df['df_tsg'],
 									sheetID=sheetID,
 									sheetName=sheetName,
 									rangeData=dic_df['range_ts']['range_ts_g'],
 									headers=dic_df['header_tsg'])
-
 	else:
-
 		dic_range = {
 
 			'range_ts': "A" + str(LatestRow + 4) + ':' + str(range_1_letter) +
@@ -568,13 +562,11 @@ def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
 			'headers_ts': list(y),
 			'range_ts': dic_range
 		}
-
 	cdr.add_data_to_spreadsheet(data=dic_df['df_ts'],
 								sheetID=sheetID,
 								sheetName=sheetName,
 								rangeData=dic_df['range_ts']['range_ts'],
 								headers=dic_df['headers_ts'])
-
 	name_ = 'Mean-median_&_Sum_of_' + name_continuous + '.png'
 	g.get_figure().savefig(name_)
 	mime_type = "image/png"
@@ -582,7 +574,6 @@ def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
 	cdr.move_file(file_name=name_,
 				  folder_name=folder)
 	os.remove(name_)
-
 
 def time_series_gs(df,
 				   dic_multiple,
@@ -876,6 +867,12 @@ def computation_continuousLow(df,
 			'Decile': [lower_d, higher_d],
 			'Value': [value_lower_d, value_higher_d]
 		})
+	else:
+		df_decile = pd.DataFrame({
+			'Decile': [0, 1],
+			'Value': [np.min(df_var[var_continuous]),
+			 np.max(df_var[var_continuous])]
+		})
 
 	# Can drop Year or categorical
 
@@ -955,9 +952,6 @@ def computation_continuousLow(df,
 		mc_results.summary().as_html(), header=0,
 		index_col=0)[0].reset_index()
 
-	if len(drop_decile) == 0:
-		df_decile = None
-
 	dic_int = {
 		'output': [
 			group_label, df_density, df_mc, sum_y, df_decile, sum_y_group,
@@ -967,20 +961,114 @@ def computation_continuousLow(df,
 
 	return dic_int
 
+def saveToDriveLow(cdr = False,
+			  sheetID=False,
+			  sheetName=False,
+			  nb_group=False,
+			  LatestRow = False,
+			  df_density=False,
+			  df_mc=False,
+			  sum_y=False,
+			  sum_y_group = False,
+			  df_decile=False,
+			  l_resut=False
+			  ):
+	"""
+	"""
+
+	nb_cols = df_density.shape[1]
+	n_rows = df_density.shape[0]
+	n_row_tukey = df_mc.shape[0]
+	begin = LatestRow + 4
+	# begin = end_row
+	# n_end_row = begin + len_btw + nb_rows + nb_group
+
+	# get range for Google Sheet
+	# alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N','O',
+	#            'P']
+
+	for i, letter in enumerate(alphabet):
+		if i == nb_cols:
+			range_1_letter = letter
+
+	dic_range = {
+
+		'range_summary': "A" + str(begin) + ":G" + str(begin + 1),
+		'range_remove': "A" + str(begin + 2) + ":C" + str(begin + 4),
+		'range_summary_group': "I" + str(begin) + ":O" + str(begin + nb_group),
+		'range_anova': "Q" + str(begin) + ":W" + str(begin + 3),
+		# 'range_density': "A" + str(begin + nb_group + 5) + ":" +
+		# str(range_1_letter) + str(begin + nb_group + 5 + n_rows),
+		'range_tukey': "U" + str(begin) + ":Z" + str(begin + n_row_tukey + 1),
+		# 'last_row': n_end_row
+	}
+
+	table_output = {
+		'summary': sum_y.to_numpy().tolist(),
+		'drop_decile':   df_decile.to_numpy().tolist(),
+		'summary_group': sum_y_group.to_numpy().tolist(),
+		'result_test': l_resut,
+		# 'table_density': df_density.to_numpy().tolist(),
+		'resultat_tukey': df_mc.to_numpy().tolist(),
+		'ranges': dic_range,
+		'header_summary': list(sum_y),
+		'header_decile': list(df_decile),
+		'header_summary_group': list(sum_y_group),
+		'header_anova': ['result', 'F-test', 'p_value'],
+		# 'header_density': list(df_density),
+		'header_tukey': list(df_mc)
+	}
+
+	# Summary data
+	cdr.add_data_to_spreadsheet(data=table_output['summary'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=table_output['ranges']['range_summary'],
+								headers=table_output['header_summary'])
+
+								# decile data
+	cdr.add_data_to_spreadsheet(data=table_output['drop_decile'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=table_output['ranges']['range_remove'],
+								headers=table_output['header_decile'])
+
+								# Summary group data
+	cdr.add_data_to_spreadsheet(data=table_output['summary_group'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=table_output['ranges']['range_summary_group'],
+								headers=table_output['header_summary_group'])
+
+								# Anova
+	cdr.add_data_to_spreadsheet(data=table_output['result_test'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=table_output['ranges']['range_anova'],
+								headers=table_output['header_anova'])
+
+	cdr.add_data_to_spreadsheet(data=table_output['resultat_tukey'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=table_output['ranges']['range_tukey'],
+								headers=table_output['header_tukey'])
+
 def summary_continuous_low_dimension(df,
 									 dic_multiple,
 									 log=False,
 									 sample=False,
 									 variables=False,
-									 sheetid=False,
+									 sheetID=False,
 									 sheetName=False,
 									 move_to_drive=False,
+									 move_to_drive_batch = False,
+									 cdr = False,
 									 verbose=True):
 	"""
 	Variables needs to be a 2d array
 	"""
 
-	if move_to_drive:
+	if move_to_drive_batch:
 
 		max_ = len(dic_multiple['var_continuous']) * \
 			len(dic_multiple['var_categorical_low'])
@@ -1020,7 +1108,7 @@ def summary_continuous_low_dimension(df,
 	# summary
 
 				LatestRow = cdr.getLatestRow(
-					sheetID=sheetid, sheetName=sheetName)
+					sheetID=sheetID, sheetName=sheetName)
 
 	# Extract from temp_comp
 
@@ -1031,94 +1119,22 @@ def summary_continuous_low_dimension(df,
 				df_decile = temp_comp['output'][4]
 				sum_y_group = temp_comp['output'][5]
 				l_resut = temp_comp['output'][6]
+				nb_group = len(group_label)
+
+				saveToDriveLow(cdr = cdr,
+					sheetID=sheetID,
+					sheetName=sheetName,
+					nb_group=nb_group,
+					LatestRow = LatestRow,
+					df_density=df_density,
+					df_mc=df_mc,
+					sum_y=sum_y,
+					sum_y_group = sum_y_group,
+					df_decile=df_decile,
+					l_resut=l_resut
+				)
 
 	# len_btw = 7
-				nb_group = len(group_label)
-				nb_cols = df_density.shape[1]
-				n_rows = df_density.shape[0]
-				n_row_tukey = df_mc.shape[0]
-				begin = LatestRow + 4
-	# begin = end_row
-	# n_end_row = begin + len_btw + nb_rows + nb_group
-
-	# get range for Google Sheet
-	# alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N','O',
-	#            'P']
-
-				for i, letter in enumerate(alphabet):
-					if i == nb_cols:
-						range_1_letter = letter
-
-				dic_range = {
-
-					'range_summary': "A" + str(begin) + ":G" + str(begin + 1),
-					'range_remove': "A" + str(begin + 2) + ":C" + str(begin + 4),
-					'range_summary_group': "I" + str(begin) + ":O" + str(begin + nb_group),
-					'range_anova': "Q" + str(begin) + ":W" + str(begin + 3),
-					# 'range_density': "A" + str(begin + nb_group + 5) + ":" +
-					# str(range_1_letter) + str(begin + nb_group + 5 + n_rows),
-					'range_tukey': "U" + str(begin) + ":Z" + str(begin + n_row_tukey + 1),
-					# 'last_row': n_end_row
-				}
-
-				table_output = {
-					'summary': sum_y.to_numpy().tolist(),
-					'drop_decile':   df_decile.to_numpy().tolist(),
-					'summary_group': sum_y_group.to_numpy().tolist(),
-					'result_test': l_resut,
-					# 'table_density': df_density.to_numpy().tolist(),
-					'resultat_tukey': df_mc.to_numpy().tolist(),
-					'ranges': dic_range,
-					'header_summary': list(sum_y),
-					'header_decile': list(df_decile),
-					'header_summary_group': list(sum_y_group),
-					'header_anova': ['result', 'F-test', 'p_value'],
-					# 'header_density': list(df_density),
-					'header_tukey': list(df_mc)
-				}
-
-		# Summary data
-				cdr.add_data_to_spreadsheet(data=table_output['summary'],
-											sheetID=sheetid,
-											sheetName=sheetName,
-											rangeData=table_output['ranges']['range_summary'],
-											headers=table_output['header_summary'])
-
-		# decile data
-				cdr.add_data_to_spreadsheet(data=table_output['drop_decile'],
-											sheetID=sheetid,
-											sheetName=sheetName,
-											rangeData=table_output['ranges']['range_remove'],
-											headers=table_output['header_decile'])
-
-		# Summary group data
-				cdr.add_data_to_spreadsheet(data=table_output['summary_group'],
-											sheetID=sheetid,
-											sheetName=sheetName,
-											rangeData=table_output['ranges']['range_summary_group'],
-											headers=table_output['header_summary_group'])
-
-		# Anova
-				cdr.add_data_to_spreadsheet(data=table_output['result_test'],
-											sheetID=sheetid,
-											sheetName=sheetName,
-											rangeData=table_output['ranges']['range_anova'],
-											headers=table_output['header_anova'])
-
-		# Density
-	   # cdr.add_data_to_spreadsheet(data=table_output['table_density'],
-	   #                             sheetID=sheetid,
-	   #                             sheetName=sheetname,
-	   #                             rangeData=table_output['ranges']['range_density'],
-	   #                             headers=table_output['header_density'])
-
-		# Tukey
-		# Anova
-				cdr.add_data_to_spreadsheet(data=table_output['resultat_tukey'],
-											sheetID=sheetid,
-											sheetName=sheetName,
-											rangeData=table_output['ranges']['range_tukey'],
-											headers=table_output['header_tukey'])
 
 		f.value += 1
 	if verbose:
@@ -1144,14 +1160,34 @@ def summary_continuous_low_dimension(df,
 											  index_cat=index_dic_g2,
 											  log=log,
 											  sample=False)
-
+		group_label = temp_comp['output'][0]
 		df_density = temp_comp['output'][1]
 		df_mc = temp_comp['output'][2]
 		sum_y = temp_comp['output'][3]
+		df_decile = temp_comp['output'][4]
 		sum_y_group = temp_comp['output'][5]
 		var_categorical = temp_comp['output'][7]
+		l_resut = temp_comp['output'][6]
 		name_continuous = temp_comp['output'][8]
 		name_categorical = temp_comp['output'][9]
+		nb_group = len(group_label)
+
+		if move_to_drive:
+			LatestRow = cdr.getLatestRow(
+				sheetID=sheetID, sheetName=sheetName)
+
+			saveToDriveLow(cdr = cdr,
+				sheetID=sheetID,
+				sheetName=sheetName,
+				nb_group=nb_group,
+				LatestRow = LatestRow,
+				df_density=df_density,
+				df_mc=df_mc,
+				sum_y=sum_y,
+				sum_y_group = sum_y_group,
+				df_decile=df_decile,
+				l_resut=l_resut
+			)
 
 		cf.go_offline()
 		cf.set_config_file(offline=False, world_readable=False, theme='space')
@@ -1232,7 +1268,7 @@ def list_dropdownLow(dic_df):
 
 	return l_choice
 
-def select_catLow_eventHandler(df, dic_df):
+def select_catLow_eventHandler(df, dic_df, cdr = False):
 
 	"""
 	"""
@@ -1249,9 +1285,11 @@ def select_catLow_eventHandler(df, dic_df):
 					   log=False,
 					   sample = fixed(False),
 					   variables=x_widget,
-					   sheetid='',
+					   sheetID='',
 					   sheetName='',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 #############################################################################
@@ -1310,6 +1348,12 @@ def computation_continuousHigh(df,
 		df_decile = pd.DataFrame({
 			'Decile': [lower_d, higher_d],
 			'Value': [value_lower_d, value_higher_d]
+		})
+	else:
+		df_decile = pd.DataFrame({
+			'Decile': [0, 1],
+			'Value': [np.min(df_var[var_continuous]),
+			 np.max(df_var[var_continuous])]
 		})
 
 	# Can drop Year or categorical
@@ -1377,9 +1421,6 @@ def computation_continuousHigh(df,
 		mc_results.summary().as_html(), header=0,
 		index_col=0)[0].reset_index()
 
-	if len(drop_decile) == 0:
-		df_decile = None
-
 	dic_int = {
 		'output': [
 			group_label, df_mc, sum_y, df_decile, sum_y_group,
@@ -1390,21 +1431,106 @@ def computation_continuousHigh(df,
 
 	return dic_int
 
+def saveToDriveHigh(cdr = False,
+	sheetID=False,
+	sheetName=False,
+	LatestRow = False,
+	group_label = False,
+	nb_group=False,
+	df_mc=False,
+	sum_y=False,
+	sum_y_group = False,
+	l_resut=False
+):
+
+	len_btw = 5
+	nb_group = len(group_label)
+	nb_cols = df_mc.shape[1]
+	n_rows = df_mc.shape[0]
+	nb_rows = n_rows + 1
+	begin = LatestRow + 4
+
+	# get range for Google Sheet
+	# alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N','O',
+	#            'P']
+
+	for i, letter in enumerate(alphabet):
+		if i == nb_cols:
+			range_1_letter = letter
+
+	dic_range = {
+		'range_summary':
+		"A" + str(begin) + ":G" + str(begin + 1),
+		'range_summary_group':
+		"I" + str(begin) + ":P" + str(begin + nb_group),
+		'range_anova':
+		"R" + str(begin) + ":X" + str(begin + 3),
+		'range_tukey':
+		"W" + str(begin) + ":AB1" + str(begin + n_rows + 1),
+		# 'last_row': n_end_row
+	}
+
+	table_output = {
+		'summary': sum_y.to_numpy().tolist(),
+		'summary_group': sum_y_group.to_numpy().tolist(),
+		'result_test': l_resut,
+		'resultat_tukey': df_mc.to_numpy().tolist(),
+		'ranges': dic_range,
+		'header_summary': list(sum_y),
+		'header_summary_group': list(sum_y_group),
+		'header_anova': ['result', 'F-test', 'p_value'],
+		'header_tukey': list(df_mc)
+	}
+
+	cdr.add_data_to_spreadsheet(
+		data=table_output['summary'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_summary'],
+		headers=table_output['header_summary'])
+
+	# Summary group data
+	cdr.add_data_to_spreadsheet(
+		data=table_output['summary_group'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_summary_group'],
+		headers=table_output['header_summary_group'])
+
+	# Anova
+	cdr.add_data_to_spreadsheet(
+		data=table_output['result_test'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_anova'],
+		headers=table_output['header_anova'])
+
+	# Tukey
+	# Anova
+	cdr.add_data_to_spreadsheet(
+		data=table_output['resultat_tukey'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_tukey'],
+		headers=table_output['header_tukey'])
+
 def summary_continuous_high_dimension(df,
 									  dic_multiple,
 									  log=False,
 									  sample=False,
 									  variables=False,
 									  var_cat_color = False,
-									  sheetid=False,
+									  sheetID=False,
 									  sheetName=False,
 									  move_to_drive=False,
+									  move_to_drive_batch=False,
+									  cdr = False,
 									  verbose=False):
 	"""
 	Add ANOVA Tukey HSD test
 	"""
 
-	if move_to_drive:
+	if move_to_drive_batch:
 
 		max_ = len(dic_multiple['var_continuous']) + \
 			len(dic_multiple['var_categorical_high'])
@@ -1444,9 +1570,6 @@ def summary_continuous_high_dimension(df,
 					log=log,
 					sample=False)
 
-				LatestRow = cdr.getLatestRow(
-					sheetID=sheetid, sheetName=sheetName)
-
 				group_label = temp_comp['output'][0]
 				df_mc = temp_comp['output'][1]
 				sum_y = temp_comp['output'][2]
@@ -1454,76 +1577,21 @@ def summary_continuous_high_dimension(df,
 				sum_y_group = temp_comp['output'][4]
 				l_resut = temp_comp['output'][5]
 
-				len_btw = 5
-				nb_group = len(group_label)
-				nb_cols = df_mc.shape[1]
-				n_rows = df_mc.shape[0]
-				nb_rows = n_rows + 1
-				begin = LatestRow + 4
+				LatestRow = cdr.getLatestRow(
+					sheetID=sheetID, sheetName=sheetName)
 
-				# get range for Google Sheet
-				# alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N','O',
-				#            'P']
-
-				for i, letter in enumerate(alphabet):
-					if i == nb_cols:
-						range_1_letter = letter
-
-				dic_range = {
-					'range_summary':
-					"A" + str(begin) + ":G" + str(begin + 1),
-					'range_summary_group':
-					"I" + str(begin) + ":P" + str(begin + nb_group),
-					'range_anova':
-					"R" + str(begin) + ":X" + str(begin + 3),
-					'range_tukey':
-					"W" + str(begin) + ":AB1" + str(begin + n_rows + 1),
-					# 'last_row': n_end_row
-				}
-
-				table_output = {
-					'summary': sum_y.to_numpy().tolist(),
-					'summary_group': sum_y_group.to_numpy().tolist(),
-					'result_test': l_resut,
-					'resultat_tukey': df_mc.to_numpy().tolist(),
-					'ranges': dic_range,
-					'header_summary': list(sum_y),
-					'header_summary_group': list(sum_y_group),
-					'header_anova': ['result', 'F-test', 'p_value'],
-					'header_tukey': list(df_mc)
-				}
-
-				cdr.add_data_to_spreadsheet(
-					data=table_output['summary'],
-					sheetID=sheetid,
+				saveToDriveHigh(cdr = cdr,
+					sheetID=sheetID,
 					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_summary'],
-					headers=table_output['header_summary'])
+					LatestRow = LatestRow,
+					group_label = group_label,
+					nb_group=group_label,
+					df_mc=df_mc,
+					sum_y=sum_y,
+					sum_y_group = sum_y_group,
+					l_resut=l_resut
+				)
 
-				# Summary group data
-				cdr.add_data_to_spreadsheet(
-					data=table_output['summary_group'],
-					sheetID=sheetid,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_summary_group'],
-					headers=table_output['header_summary_group'])
-
-				# Anova
-				cdr.add_data_to_spreadsheet(
-					data=table_output['result_test'],
-					sheetID=sheetid,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_anova'],
-					headers=table_output['header_anova'])
-
-				# Tukey
-				# Anova
-				cdr.add_data_to_spreadsheet(
-					data=table_output['resultat_tukey'],
-					sheetID=sheetid,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_tukey'],
-					headers=table_output['header_tukey'])
 		f.value += 1
 	if verbose:
 
@@ -1554,15 +1622,36 @@ def summary_continuous_high_dimension(df,
 			log=log,
 			sample=False)
 
+		group_label = temp_comp['output'][0]
 		df_mc = temp_comp['output'][1]
 		sum_y = temp_comp['output'][2]
 		sum_y_group = temp_comp['output'][4]
+		l_resut = temp_comp['output'][5]
 		var_categorical = temp_comp['output'][6]
 		name_continuous = temp_comp['output'][7]
 		name_categorical = temp_comp['output'][8]
 		####
 		var_cat_color = temp_comp['output'][9]
+
 		#df_var = temp_comp['output'][10]
+
+		if move_to_drive:
+
+
+			LatestRow = cdr.getLatestRow(
+				sheetID=sheetID, sheetName=sheetName)
+
+			saveToDriveHigh(cdr = cdr,
+				sheetID=sheetID,
+				sheetName=sheetName,
+				LatestRow = LatestRow,
+				group_label = group_label,
+				nb_group=group_label,
+				df_mc=df_mc,
+				sum_y=sum_y,
+				sum_y_group = sum_y_group,
+				l_resut=l_resut
+			)
 
 		summary_ = widgets.Output()
 		summary_tukey = widgets.Output()
@@ -1651,7 +1740,7 @@ def list_dropdownHigh(dic_df):
 
 	return l_choice
 
-def select_catHigh_eventHandler(df, dic_df):
+def select_catHigh_eventHandler(df, dic_df, cdr = False):
 	"""
 	"""
 	l_cat = list(df.select_dtypes(include='object'))
@@ -1670,9 +1759,11 @@ def select_catHigh_eventHandler(df, dic_df):
 					   sample=fixed(False),
 					   variables=x_widget,
 					   var_cat_color = l_cat,
-					   sheetid='',
+					   sheetID='',
 					   sheetName='',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 
@@ -1858,20 +1949,82 @@ def createfigurePlot(df, var_categorical_low, name_categorical_high,
 
 		return myFig
 
+def saveToDriveRank(cdr = False,
+				sheetID=False,
+				sheetName=False,
+				LatestRow= False,
+				folder=False,
+				df_slope = False,
+				df_var = False,
+				var_categorical_low = False,
+				name_categorical_high = False,
+				var_continuous = False
+				):
+	"""
+	"""
+	nb_cols = df_slope.shape[1]
+	n_rows = df_slope.shape[0]
+	begin = LatestRow + 4
+	end = begin + n_rows + 1
+
+	for i, letter in enumerate(alphabet):
+		if i == nb_cols:
+			range_1_letter = letter
+
+	range_slope = "A" + str(begin) + ":" + \
+		str(range_1_letter) + str(end)
+	table_output = {
+		'df_slope': df_slope.to_numpy().tolist(),
+		'range_slope': range_slope,
+		'header_slope': list(df_slope)
+	}
+	# return table_output
+	# Summary data
+	cdr.add_data_to_spreadsheet(
+		data=table_output['df_slope'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['range_slope'],
+		headers=table_output['header_slope'])
+
+	for i, stat in enumerate(['mean', 'median', 'sum', 'per']):
+		fig_ = createfigurePlot(
+			df=df_var,
+			var_categorical_low=var_categorical_low,
+			name_categorical_high=name_categorical_high,
+			df_slope=df_slope,
+			var_continuous=var_continuous,
+			stat=stat)
+
+		name_ = 'Diverging Bars of ' + var_continuous + ' within ' + \
+			name_categorical_high + ' as ' + stat + '.png'
+		# There is no plot yet when the low dimensiona group is
+		# higher than 2
+		fig_.savefig(name_)
+		try:
+
+			mime_type = "image/png"
+			cdr.upload_file_root(mime_type, name_)
+			cdr.move_file(file_name=name_, folder_name=folder)
+			os.remove(name_)
+		except:
+			pass
 
 def slope_rank(df,
 			   dic_multiple,
 			   log=False,
 			   variables=False,
-			   sheetid=False,
+			   sheetID=False,
 			   sheetName=False,
 			   folder=False,
 			   move_to_drive=False,
+			   move_to_drive_batch=False,
+			   cdr = False,
 			   verbose=False):
 	"""
 	"""
 
-	if move_to_drive:
+	if move_to_drive_batch:
 		max_ = len(dic_multiple['var_continuous']) + \
 			len(dic_multiple['var_categorical_high']) + \
 			len(dic_multiple['var_categorical_low'])
@@ -1915,8 +2068,7 @@ def slope_rank(df,
 						log=log,
 						sample=False)
 
-					LatestRow = cdr.getLatestRow(
-						sheetID=sheetid, sheetName=sheetName)
+
 
 					df_slope = temp_comp['output'][0]
 					name_categorical_high = temp_comp['output'][2]
@@ -1927,52 +2079,19 @@ def slope_rank(df,
 
 					# Extract each component of the dictionary
 
-					nb_cols = df_slope.shape[1]
-					n_rows = df_slope.shape[0]
-					begin = LatestRow + 4
-					end = begin + n_rows + 1
+					LatestRow = cdr.getLatestRow(
+						sheetID=sheetID, sheetName=sheetName)
 
-					for i, letter in enumerate(alphabet):
-						if i == nb_cols:
-							range_1_letter = letter
-
-					range_slope = "A" + str(begin) + ":" + \
-						str(range_1_letter) + str(end)
-					table_output = {
-						'df_slope': df_slope.to_numpy().tolist(),
-						'range_slope': range_slope,
-						'header_slope': list(df_slope)
-					}
-					# return table_output
-					# Summary data
-					cdr.add_data_to_spreadsheet(
-						data=table_output['df_slope'],
-						sheetID=sheetid,
-						sheetName=sheetName,
-						rangeData=table_output['range_slope'],
-						headers=table_output['header_slope'])
-
-					for i, stat in enumerate(['mean', 'median', 'sum', 'per']):
-						fig_ = createfigurePlot(
-							df=df_var,
-							var_categorical_low=var_categorical_low,
-							name_categorical_high=name_categorical_high,
-							df_slope=df_slope,
-							var_continuous=var_continuous,
-							stat=stat)
-
-						name_ = 'Diverging Bars of ' + var_continuous + ' within ' + \
-							name_categorical_high + ' as ' + stat + '.png'
-						# There is no plot yet when the low dimensiona group is
-						# higher than 2
-						try:
-							fig_.savefig(name_)
-							mime_type = "image/png"
-							cdr.upload_file_root(mime_type, name_)
-							cdr.move_file(file_name=name_, folder_name=folder)
-							os.remove(name_)
-						except:
-							pass
+					saveToDriveRank(cdr = cdr,
+									sheetID=sheetID,
+									sheetName=sheetName,
+									LatestRow= LatestRow,
+									folder=folder,
+									df_slope = df_slope,
+									df_var = df_var,
+									var_categorical_low = var_categorical_low,
+									name_categorical_high = name_categorical_high,
+									var_continuous = var_continuous)
 
 					f.value += 1
 
@@ -2014,6 +2133,21 @@ def slope_rank(df,
 		df_slope = temp_comp['output'][6]
 		var_continuous = temp_comp['output'][7]
 		var_categorical_high = temp_comp['output'][8]
+
+		if move_to_drive:
+			LatestRow = cdr.getLatestRow(
+				sheetID=sheetID, sheetName=sheetName)
+
+			saveToDriveRank(cdr = cdr,
+							sheetID=sheetID,
+							sheetName=sheetName,
+							LatestRow= LatestRow,
+							folder=folder,
+							df_slope = df_slope,
+							df_var = df_var,
+							var_categorical_low = var_categorical_low,
+							name_categorical_high = name_categorical_high,
+							var_continuous = var_continuous)
 
 		summary_ = widgets.Output()
 		summary_plot = widgets.Output()
@@ -2122,7 +2256,6 @@ def slope_rank(df,
 			py.iplot(fig1)
 			#display(parallel_df)
 
-
 def list_dropdownHighLow(dic_df):
 	"""
 	"""
@@ -2142,7 +2275,8 @@ def list_dropdownHighLow(dic_df):
 	return l_choice
 
 def select_catHighLow_eventHandler(df,
-							dic_df):
+							dic_df,
+							cdr = False):
 	"""
 	"""
 
@@ -2158,10 +2292,12 @@ def select_catHighLow_eventHandler(df,
 					   log=False,
 					   sample=fixed(False),
 					   variables=x_widget,
-					   sheetid='',
+					   sheetID='',
 					   sheetName='',
 					   folder = '',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 #############################################################################
@@ -2261,18 +2397,51 @@ def computation_scatterplot(df,
 
 	return dic_int
 
+def saveToDriveScatter(cdr = False,
+				   folder=False,
+				   var_x = False,
+				   var_y = False,
+				   df_scat = False,
+				   name_y= False,
+				   name_x =False,
+				   log = False):
+
+	sns.set_style("white")
+	gridobj = sns.lmplot(x=var_x, y=var_y, data=df_scat)
+	if log == False:
+		name_graph_save = "Scatterplot with line of best fit of " + \
+			name_y + ' and ' + name_x
+		plt.title(name_graph_save,
+				  fontsize=10)
+	else:
+		name_graph_save = "Scatterplot with line of best fit of " + \
+			name_y + ' and ' + name_x + ' in log of ' + log
+		plt.title(name_graph_save,
+				  fontsize=20)
+
+	name_ = name_graph_save + '.png'
+	gridobj.savefig(name_)
+	folder_name = folder
+	mime_type = "image/png"
+	cdr.upload_file_root(mime_type, name_)
+	cdr.move_file(file_name=name_,
+				  folder_name=folder_name)
+	os.remove(name_)
+
 def scatterplot(df,
 				dic_multiple,
 				variables=False,
 				log=False,
 				move_to_drive=False,
-				folder_name=False,
+				move_to_drive_batch = False,
+				folder=False,
+				cdr = False,
 				verbose=False):
 	"""
 	Plot a scatterplot, and save it in plotly
 	"""
 
-	if move_to_drive:
+	if move_to_drive_batch:
 
 		max_ = len(dic_multiple['var_Y']) + \
 			len(dic_multiple['var_X'])
@@ -2309,27 +2478,16 @@ def scatterplot(df,
 				name_y = temp_comp['output'][3]
 				name_x = temp_comp['output'][4]
 
-				sns.set_style("white")
-				gridobj = sns.lmplot(x=var_x, y=var_y, data=df_scat)
-				if log == False:
-					name_graph_save = "Scatterplot with line of best fit of " + \
-						name_y + ' and ' + name_x
-					plt.title(name_graph_save,
-							  fontsize=10)
-				else:
-					name_graph_save = "Scatterplot with line of best fit of " + \
-						name_y + ' and ' + name_x + ' in log of ' + log
-					plt.title(name_graph_save,
-							  fontsize=20)
+				saveToDriveScatter(cdr = cdr,
+								   folder=folder,
+								   var_x = var_x,
+								   var_y = var_y,
+								   df_scat = df_scat,
+								   name_y= name_y,
+								   name_x =name_x,
+								   log = log)
 
-				name_ = name_graph_save + '.png'
-				gridobj.savefig(name_)
-				folder_name = folder_name
-				mime_type = "image/png"
-				cdr.upload_file_root(mime_type, name_)
-				cdr.move_file(file_name=name_,
-							  folder_name=folder_name)
-				os.remove(name_)
+
 		f.value += 1
 
 	if verbose:
@@ -2361,6 +2519,16 @@ def scatterplot(df,
 		var_x = temp_comp['output'][2]
 		name_y = temp_comp['output'][3]
 		name_x = temp_comp['output'][4]
+
+		if move_to_drive:
+			saveToDriveScatter(cdr = cdr,
+							   folder=folder,
+							   var_x = var_x,
+							   var_y = var_y,
+							   df_scat = df_scat,
+							   name_y= name_y,
+							   name_x =name_x,
+							   log = log)
 
 		summary_plot = widgets.Output()
 		tab_contents = [summary_plot]
@@ -2401,6 +2569,7 @@ def list_dropdownScatter(dic_df):
 
 def select_scatter_eventHandler(df,
 								dic_df,
+								cdr = False
 								):
 
 	"""
@@ -2417,8 +2586,10 @@ def select_scatter_eventHandler(df,
 					   log=[False, 'Y', 'X', 'YX'],
 					   sample=fixed(False),
 					   variables=x_widget,
-					   folder_name = '',
+					   folder = '',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 #############################################################################
 #############################################################################
@@ -2560,20 +2731,63 @@ def computation_scatterplotg1(df,
 
 	return dic_int
 
+def saveToDriveScatCat(cdr = False,
+				   folder=False,
+				   groups= False,
+				   var_group = False,
+				   df_1 = False,
+				   var_col = False,
+				   var_x =False,
+				   var_y =False,
+				   name_y = False,
+				   name_x = False,
+				   name_group = False,
+				   log = False,
+				   ):
+
+	if len(groups) < 10:
+
+		if len(var_col) > 0:
+			g = sns.FacetGrid(df_1, col=var_group,
+							  hue=var_col[0])
+		else:
+			g = sns.FacetGrid(df_1, col=var_group)
+		g = (g.map(plt.scatter, var_x, var_y, edgecolor="w")
+			 .add_legend())
+
+	if log == False:
+		name_graph_save = "Scatterplot with line of best fit of " + \
+			name_y + ' and ' + name_x + ' grouped by' + name_group
+	else:
+		name_graph_save = "Scatterplot with line of best fit of " + \
+			name_y + ' and ' + name_x + ' grouped by' + name_group +\
+			' in log of ' + log
+
+	name_ = name_graph_save + '.png'
+	g.savefig(name_)
+	folder_name = folder
+	mime_type = "image/png"
+	cdr.upload_file_root(mime_type, name_)
+	cdr.move_file(file_name=name_,
+				  folder_name=folder_name)
+	os.remove(name_)
+
 def scatterplot_categorical(df,
 							dic_multiple,
 							variables=False,
 							log=False,
 							aggregationY= 'sum',
 							aggregationX= 'sum',
+							folder=False,
 							move_to_drive=False,
-							folder_name=False,
+							move_to_drive_batch = False,
+							cdr = False,
 							verbose=False):
 	"""
 	Plot a scatterplot, and save it in plotly
 	"""
 
-	if move_to_drive:
+	if move_to_drive_batch:
 		max_ = len(dic_multiple['var_Y']) + \
 			len(dic_multiple['var_X']) + \
 			len(dic_multiple['var_grouping'])
@@ -2628,35 +2842,21 @@ def scatterplot_categorical(df,
 					var_col = temp_comp['output'][8]
 					groups = temp_comp['output'][9]
 
-					print(var_col)
-
 					# Make graphs
-					if len(groups) < 10:
+					saveToDriveScatCat(cdr = cdr,
+									   folder=folder,
+									   groups= groups,
+									   var_group = var_group,
+									   df_1 = df_1,
+									   var_col = var_col,
+									   var_x =var_x,
+									   var_y =var_y,
+									   name_y = name_y,
+									   name_x = name_x,
+									   name_group = name_group,
+									   log = log
+									   )
 
-						if len(var_col) > 0:
-							g = sns.FacetGrid(df_1, col=var_group,
-											  hue=var_col[0])
-						else:
-							g = sns.FacetGrid(df_1, col=var_group)
-						g = (g.map(plt.scatter, var_x, var_y, edgecolor="w")
-							 .add_legend())
-
-					if log == False:
-						name_graph_save = "Scatterplot with line of best fit of " + \
-							name_y + ' and ' + name_x + ' grouped by' + name_group
-					else:
-						name_graph_save = "Scatterplot with line of best fit of " + \
-							name_y + ' and ' + name_x + ' grouped by' + name_group +\
-							' in log of ' + log
-
-					name_ = name_graph_save + '.png'
-					g.get_figure().savefig(name_)
-					folder_name = folder_name
-					mime_type = "image/png"
-					cdr.upload_file_root(mime_type, name_)
-					cdr.move_file(file_name=name_,
-								  folder_name=folder_name)
-					os.remove(name_)
 
 					f.value += 1
 		f.value += 1
@@ -2708,6 +2908,21 @@ def scatterplot_categorical(df,
 		var_col = temp_comp['output'][8]
 		groups = temp_comp['output'][9]
 		df_agg = temp_comp['output'][10]
+
+		if move_to_drive:
+			saveToDriveScatCat(cdr = cdr,
+							   folder=folder,
+							   groups= groups,
+							   var_group = var_group,
+							   df_1 = df_1,
+							   var_col = var_col,
+							   var_x =var_x,
+							   var_y =var_y,
+							   name_y = name_y,
+							   name_x = name_x,
+							   name_group = name_group,
+							   log = log
+							   )
 
 		summary_ = widgets.Output()
 		summary_plot = widgets.Output()
@@ -2801,7 +3016,8 @@ def list_dropdownscatterG(dic_df):
 	return l_choice
 
 def select_scatterGroup_eventHandler(df,
-									 dic_df
+									 dic_df,
+									 cdr = False
 									 ):
 
 	"""
@@ -2820,9 +3036,11 @@ def select_scatterGroup_eventHandler(df,
 					   sample=fixed(False),
 					   variables=x_widget,
 					   aggregationY= ['sum', 'median', 'mean', 'min', 'max'],
-					  aggregationX= ['sum', 'median', 'mean', 'min', 'max'],
-					   folder_name='',
+					   aggregationX= ['sum', 'median', 'mean', 'min', 'max'],
+					   folder='',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 #############################################################################
@@ -2956,14 +3174,50 @@ def computation_scatterplotg1g2(df,
 
 	return dic_int
 
+def saveToDriveScatterG1G2(cdr = False,
+					   sheetID=False,
+					   sheetName=False,
+					   df_dot = False,
+					   LatestRow =False):
+
+	"""
+	"""
+	len_btw = 5
+	nb_cols = df_dot.shape[1]
+	n_rows = df_dot.shape[0]
+	begin = LatestRow + 4
+	end = begin + n_rows + 1
+
+	for i, letter in enumerate(alphabet):
+		if i == nb_cols:
+			range_1_letter = letter
+
+	range_dot = "A" + str(LatestRow + 4) + \
+		":" + str(range_1_letter) + str(end)
+
+	table_output = {
+		'df_dot': df_dot.to_numpy().tolist(),
+		'range_dot': range_dot,
+		'header_dot': list(df_dot),
+	}
+
+	cdr.add_data_to_spreadsheet(data=table_output['df_dot'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=table_output['range_dot'],
+								headers=table_output['header_dot'])
+
 def scatter_g1_g2(df,
 				  dic_multiple,
 				  log=False,
 				  variables=False,
 				  var_col = False,
-				  spreadsheetID=False,
+				  sheetID=False,
 				  sheetName=False,
+				  folder = False,
 				  move_to_drive=False,
+				  move_to_drive_batch=False,
+				  cdr = False,
 				  verbose=False):
 	"""
 	Filter has to be a higher level than the group
@@ -2972,7 +3226,7 @@ def scatter_g1_g2(df,
 
 	# Extract each component of the dictionary
 
-	if move_to_drive:
+	if move_to_drive_batch:
 		max_ = len(dic_multiple['var_Y']) + \
 			len(dic_multiple['var_X']) + \
 			len(dic_multiple['var_grouping'])
@@ -3026,32 +3280,15 @@ def scatter_g1_g2(df,
 					var_col = temp_comp['output'][8]
 
 					LatestRow = cdr.getLatestRow(
-						sheetID=sheetid, sheetName=sheetName)
+						sheetID=sheetID, sheetName=sheetName)
 
-					len_btw = 5
-					nb_cols = df_dot.shape[1]
-					n_rows = df_dot.shape[0]
-					begin = LatestRow + 4
-					end = begin + n_rows + 1
+					saveToDriveScatterG1G2(cdr = cdr,
+										   sheetID=sheetID,
+										   sheetName=sheetName,
+										   df_dot = df_dot,
+										   LatestRow =LatestRow)
 
-					for i, letter in enumerate(alphabet):
-						if i == nb_cols:
-							range_1_letter = letter
 
-					range_dot = "A" + str(LatestRow + 4) + \
-						":" + str(range_1_letter) + str(end)
-
-					table_output = {
-						'df_dot': df_dot.to_numpy().tolist(),
-						'range_dot': range_dot,
-						'header_dot': list(df_dot),
-					}
-
-					cdr.add_data_to_spreadsheet(data=table_output['df_dot'],
-												sheetID=spreadsheetID,
-												sheetName=sheetName,
-												rangeData=table_output['range_dot'],
-												headers=table_output['header_dot'])
 				f.value += 1
 			f.value += 1
 	if verbose:
@@ -3099,6 +3336,16 @@ def scatter_g1_g2(df,
 		name_group = temp_comp['output'][7]
 		var_col = temp_comp['output'][8]
 
+		if move_to_drive:
+			LatestRow = cdr.getLatestRow(
+				sheetID=sheetID, sheetName=sheetName)
+
+			saveToDriveScatterG1G2(cdr = cdr,
+								   sheetID=sheetID,
+								   sheetName=sheetName,
+								   df_dot = df_dot,
+								   LatestRow =LatestRow)
+
 		summary_plot = widgets.Output()
 		summary_plot1 = widgets.Output()
 		summary_plot2 = widgets.Output()
@@ -3133,9 +3380,19 @@ def scatter_g1_g2(df,
 
 			with summary_plot:
 				#if stat == '_sum':
-				ax= sns.regplot(x=x, y=y, data=df_scat)
+				ax = sns.regplot(x=x, y=y, data=df_scat)
 				ax.set_title(name_graph_save)
 				plt.show()
+
+				if move_to_drive:
+					name_ = name_graph_save + '.png'
+					ax.get_figure().savefig(name_)
+					folder_name = folder
+					mime_type = "image/png"
+					cdr.upload_file_root(mime_type, name_)
+					cdr.move_file(file_name=name_,
+								  folder_name=folder_name)
+					os.remove(name_)
 
 			with summary_plot1:
 				#if stat == '_sum':
@@ -3149,6 +3406,16 @@ def scatter_g1_g2(df,
 										legend = legend)
 				ax.set_title(name_graph_save)
 				plt.show()
+
+				if move_to_drive:
+					name_ = name_graph_save + '.png'
+					ax.get_figure().savefig(name_)
+					folder_name = folder
+					mime_type = "image/png"
+					cdr.upload_file_root(mime_type, name_)
+					cdr.move_file(file_name=name_,
+								  folder_name=folder_name)
+					os.remove(name_)
 
 			if stat == '_sum':
 				with summary_plot2:
@@ -3173,9 +3440,9 @@ def scatter_g1_g2(df,
 
 					#display(df_scat)
 
-
 def select_scatterGroup2_eventHandler(df,
-									 dic_df
+									 dic_df,
+									 cdr = False
 									 ):
 	"""
 	"""
@@ -3194,9 +3461,12 @@ def select_scatterGroup2_eventHandler(df,
 					   sample=fixed(False),
 					   variables=x_widget,
 					   var_col = l_filter,
-					   spreadsheetID = '',
+					   sheetID = '',
 					   sheetName = '',
+					   folder = '',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 #############################################################################
@@ -3364,20 +3634,157 @@ def categorical_analysis(df,
 
 	return dic_int
 
+def saveToDriveCategorical(cdr = False,
+					   sheetID=False,
+					   sheetName=False,
+					   folder=False,
+					   slide=False,
+					   df_total =False,
+					   slide_perc_rows=False,
+					   slide_perc_col= False,
+					   pearson_resid_df  = False,
+					   contribution_df= False,
+					   l_resut=False,
+					   LatestRow =False,
+					   column_name=False,
+					   headers_data = False):
+
+	"""
+	"""
+	df_count = slide.shape[0]
+	len_btw = 5
+	nb_cols = slide.shape[1] + 2
+	nb_rows = df_count + 1
+	begin = LatestRow + 4
+	n_end_row = begin + 3 * len_btw + nb_rows * 3
+
+	for i, letter in enumerate(alphabet):
+		if i == nb_cols + 1:
+			range_2_letter = letter
+		if i + 1 == nb_cols:
+			range_letter = letter
+		if i + 2 == nb_cols:
+			range_1_letter = letter
+
+	dic_range = {
+		'range_raw':
+		"A" + str(begin) + ':' + str(range_1_letter) +
+		str(begin + nb_rows),
+		'total_raw':
+		str(range_letter) + str(begin) + ':' + str(range_letter) +
+		str(begin + nb_rows),
+		'range_prop_raws':
+		"A" + str(begin + 1 * (nb_rows + len_btw)) + ":" +
+		range_1_letter + str(begin + 1 * len_btw + nb_rows * 2),
+		'range_prop_col':
+		str(range_2_letter) + str(begin + 1 * (nb_rows + len_btw))
+		+ ":CZ" + str(begin + 1 * len_btw + nb_rows * 2),
+		'range_pearson':
+		"A" + str(begin + 2 * (nb_rows + len_btw)) + ":" +
+		range_1_letter + str(begin + 2 * len_btw + nb_rows * 3),
+		'range_contribution':
+		str(range_2_letter) + str(begin + 2 * (nb_rows + len_btw))
+		+ ":CZ" + str(begin + 2 * len_btw + nb_rows * 3),
+		'range_test':
+		range_2_letter + str(begin) + ":CZ" + str(begin + 1),
+		'range_name_column':
+		range_2_letter + str(begin + 3) + ":CZ" + str(begin + 4)
+	}
+
+	table_output = {
+		'table_count': slide.to_numpy().tolist(),
+		'table_total': df_total.to_numpy().tolist(),
+		'table_proportion_rows':
+		slide_perc_rows.to_numpy().tolist(),
+		'table_proportion_col': slide_perc_col.to_numpy().tolist(),
+		'pearson_resid': pearson_resid_df.to_numpy().tolist(),
+		'contribution': contribution_df.to_numpy().tolist(),
+		'result_test': l_resut,
+		'ranges': dic_range,
+		'header_data': list(headers_data),
+		'header_chi': ['dof', 'p_value', 'result', 'nb rows'],
+		'name_column': [column_name]
+	}
+
+	cdr.add_data_to_spreadsheet(
+		data=table_output['table_count'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_raw'],
+		headers=table_output['header_data'])
+
+	# total count
+	cdr.add_data_to_spreadsheet(
+		data=table_output['table_total'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['total_raw'],
+		headers=['Total']),
+
+	# table_proportion_rows
+	cdr.add_data_to_spreadsheet(
+		data=table_output['table_proportion_rows'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_prop_raws'],
+		headers=table_output['header_data'])
+
+	# table_proportion_col
+	cdr.add_data_to_spreadsheet(
+		data=table_output['table_proportion_col'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_prop_col'],
+		headers=table_output['header_data'])
+
+	# pearson_resid
+	cdr.add_data_to_spreadsheet(
+		data=table_output['pearson_resid'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_pearson'],
+		headers=table_output['header_data'])
+
+	# contribution
+	cdr.add_data_to_spreadsheet(
+		data=table_output['contribution'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_contribution'],
+		headers=table_output['header_data'])
+
+	# result_test
+	cdr.add_data_to_spreadsheet(
+		data=table_output['result_test'],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_test'],
+		headers=table_output['header_chi'])
+
+	# Name column
+	cdr.add_data_to_spreadsheet(
+		data=[table_output['name_column']],
+		sheetID=sheetID,
+		sheetName=sheetName,
+		rangeData=table_output['ranges']['range_name_column'],
+		headers=['name_column'])
+
 def categorical(df,
 				dic_multiple,
 				variables=False,
 				ca = False,
 				sheetID=False,
 				sheetName=False,
+				folder=False,
 				move_to_drive=False,
-				folder_name=False,
+				move_to_drive_batch=False,
+				cdr=False,
 				verbose=False):
 
 	"""
 	"""
 
-	if move_to_drive:
+	if move_to_drive_batch:
 
 		max_ = len(dic_multiple['var_columns']) + \
 			len(dic_multiple['var_rows'])
@@ -3426,124 +3833,22 @@ def categorical(df,
 				LatestRow = cdr.getLatestRow(
 					sheetID=sheetID, sheetName=sheetName)
 
-				df_count = slide.shape[0]
-				len_btw = 5
-				nb_cols = slide.shape[1] + 2
-				nb_rows = df_count + 1
-				begin = LatestRow + 4
-				n_end_row = begin + 3 * len_btw + nb_rows * 3
+				saveToDriveCategorical(cdr = cdr,
+										   sheetID=sheetID,
+										   sheetName=sheetName,
+										   folder=folder,
+										   slide=slide,
+										   df_total =df_total,
+										   slide_perc_rows=slide_perc_rows,
+										   slide_perc_col= slide_perc_col,
+										   pearson_resid_df  = pearson_resid_df,
+										   contribution_df= contribution_df,
+										   l_resut=l_resut,
+										   LatestRow =LatestRow,
+										   column_name=column_name,
+										   headers_data = headers_data)
 
-				for i, letter in enumerate(alphabet):
-					if i == nb_cols + 1:
-						range_2_letter = letter
-					if i + 1 == nb_cols:
-						range_letter = letter
-					if i + 2 == nb_cols:
-						range_1_letter = letter
 
-				dic_range = {
-					'range_raw':
-					"A" + str(begin) + ':' + str(range_1_letter) +
-					str(begin + nb_rows),
-					'total_raw':
-					str(range_letter) + str(begin) + ':' + str(range_letter) +
-					str(begin + nb_rows),
-					'range_prop_raws':
-					"A" + str(begin + 1 * (nb_rows + len_btw)) + ":" +
-					range_1_letter + str(begin + 1 * len_btw + nb_rows * 2),
-					'range_prop_col':
-					str(range_2_letter) + str(begin + 1 * (nb_rows + len_btw))
-					+ ":CZ" + str(begin + 1 * len_btw + nb_rows * 2),
-					'range_pearson':
-					"A" + str(begin + 2 * (nb_rows + len_btw)) + ":" +
-					range_1_letter + str(begin + 2 * len_btw + nb_rows * 3),
-					'range_contribution':
-					str(range_2_letter) + str(begin + 2 * (nb_rows + len_btw))
-					+ ":CZ" + str(begin + 2 * len_btw + nb_rows * 3),
-					'range_test':
-					range_2_letter + str(begin) + ":CZ" + str(begin + 1),
-					'range_name_column':
-					range_2_letter + str(begin + 3) + ":CZ" + str(begin + 4)
-				}
-
-				table_output = {
-					'table_count': slide.to_numpy().tolist(),
-					'table_total': df_total.to_numpy().tolist(),
-					'table_proportion_rows':
-					slide_perc_rows.to_numpy().tolist(),
-					'table_proportion_col': slide_perc_col.to_numpy().tolist(),
-					'pearson_resid': pearson_resid_df.to_numpy().tolist(),
-					'contribution': contribution_df.to_numpy().tolist(),
-					'result_test': l_resut,
-					'ranges': dic_range,
-					'header_data': list(headers_data),
-					'header_chi': ['dof', 'p_value', 'result', 'nb rows'],
-					'name_column': [column_name]
-				}
-
-				f.value += 1
-				cdr.add_data_to_spreadsheet(
-					data=table_output['table_count'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_raw'],
-					headers=table_output['header_data'])
-
-				# total count
-				cdr.add_data_to_spreadsheet(
-					data=table_output['table_total'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['total_raw'],
-					headers=['Total']),
-
-				# table_proportion_rows
-				cdr.add_data_to_spreadsheet(
-					data=table_output['table_proportion_rows'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_prop_raws'],
-					headers=table_output['header_data'])
-
-				# table_proportion_col
-				cdr.add_data_to_spreadsheet(
-					data=table_output['table_proportion_col'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_prop_col'],
-					headers=table_output['header_data'])
-
-				# pearson_resid
-				cdr.add_data_to_spreadsheet(
-					data=table_output['pearson_resid'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_pearson'],
-					headers=table_output['header_data'])
-
-				# contribution
-				cdr.add_data_to_spreadsheet(
-					data=table_output['contribution'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_contribution'],
-					headers=table_output['header_data'])
-
-				# result_test
-				cdr.add_data_to_spreadsheet(
-					data=table_output['result_test'],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_test'],
-					headers=table_output['header_chi'])
-
-				# Name column
-				cdr.add_data_to_spreadsheet(
-					data=[table_output['name_column']],
-					sheetID=sheetID,
-					sheetName=sheetName,
-					rangeData=table_output['ranges']['range_name_column'],
-					headers=['name_column'])
 		f.value += 1
 	if verbose:
 		regex = r"^[^-]+"
@@ -3554,7 +3859,7 @@ def categorical(df,
 		for key, value in dic_multiple['var_columns'].items():
 			if g1 == value['name']:
 				index_dic_g1 = key
-
+				column_name = value['name']
 		for key, value in dic_multiple['var_rows'].items():
 			if g2 == value['name']:
 				index_dic_g2 = key
@@ -3577,6 +3882,25 @@ def categorical(df,
 		l_resut = cat_analysis['output'][6]
 		headers_data = cat_analysis['output'][7]
 		name_column = cat_analysis['output'][8]
+
+		if move_to_drive:
+			LatestRow = cdr.getLatestRow(
+				sheetID=sheetID, sheetName=sheetName)
+
+			saveToDriveCategorical(cdr = cdr,
+									   sheetID=sheetID,
+									   sheetName=sheetName,
+									   folder=folder,
+									   slide=slide,
+									   df_total =df_total,
+									   slide_perc_rows=slide_perc_rows,
+									   slide_perc_col= slide_perc_col,
+									   pearson_resid_df  = pearson_resid_df,
+									   contribution_df= contribution_df,
+									   l_resut=l_resut,
+									   LatestRow =LatestRow,
+									   column_name=column_name,
+									   headers_data = headers_data)
 
 		summary_raw = widgets.Output()
 		#summary_count = widgets.Output()
@@ -3649,6 +3973,15 @@ def categorical(df,
 					   summary_contribution, summary_result, summary_ca])
 			tab.set_title(6, 'Correspondence Anasylis')
 			with summary_ca:
+				name_ = 'Correspondence Anasylis'  + '.png'
+				fig_2['figure'].savefig(name_)
+				folder_name = folder
+				mime_type = "image/png"
+				cdr.upload_file_root(mime_type, name_)
+				cdr.move_file(file_name=name_,
+							  folder_name=folder_name)
+				os.remove(name_)
+
 				display(fig_2['figure'])
 
 
@@ -3679,7 +4012,8 @@ def list_dropdownCat(dic_df):
 	return l_choice
 
 def select_cat_eventHandler(df,
-							dic_df):
+							dic_df,
+							cdr = False):
 	"""
 	"""
 
@@ -3696,7 +4030,10 @@ def select_cat_eventHandler(df,
 					   ca = False,
 					   sheetID='',
 					   sheetName='',
+					   folder = '',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 #############################################################################
@@ -3835,31 +4172,32 @@ dic_scatterg2 = False, dic_cat = False):
 
 	with wid_cont:
 		display(select_catLow_eventHandler(df = dataframe,
-		dic_df = dic_Low))
+		dic_df = dic_Low,
+		cdr = cdr))
 
 	with wid_high:
 		display(select_catHigh_eventHandler(df = dataframe,
-		dic_df = dic_high))
+		dic_df = dic_high,cdr = cdr))
 
 	with wid_highLow:
 		display(select_catHighLow_eventHandler(df = dataframe,
-		dic_df = dic_HighLow))
+		dic_df = dic_HighLow,cdr = cdr))
 
 	with wid_scatter:
 		display(select_scatter_eventHandler(df = dataframe,
-		dic_df = dic_scatter))
+		dic_df = dic_scatter,cdr = cdr))
 
 	with wid_scatter1:
 		display(select_scatterGroup_eventHandler(df = dataframe,
-		dic_df = dic_scatterg1))
+		dic_df = dic_scatterg1,cdr = cdr))
 
 	with wid_scatter2:
 		display(select_scatterGroup2_eventHandler(df = dataframe,
-		dic_df = dic_scatterg1))
+		dic_df = dic_scatterg1,cdr = cdr))
 
 	with wid_cat:
 		display(select_cat_eventHandler(df = dataframe,
-		dic_df = dic_cat))
+		dic_df = dic_cat,cdr = cdr))
 
 	with wid_fe:
 		display(select_fe_eventHandler(df = dataframe))
