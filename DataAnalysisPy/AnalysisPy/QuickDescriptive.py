@@ -38,6 +38,205 @@ alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N',
 'AC', 'AD', 'AE', 'AF', 'AG', 'AH','AI']
 ###### Define extra functions
 
+def create_all_keys(df, date, method=1):
+    """
+
+    """
+    l_cont = list(df.select_dtypes(include=['int', 'float']))
+    l_cont = list(df.select_dtypes(include=['int', 'float']))
+    l_cat = list(df.select_dtypes(include='object'))
+
+    l_low = []
+    l_high = []
+    for x in l_cat:
+        count = df[x].nunique()
+        if count > 10:
+            l_high.append(x)
+        else:
+            l_low.append(x)
+
+    if method == 1:
+        dic_ts = {
+            'var_date': {
+                'V0': {
+                    'name': date,
+                    'variable_db': date,
+                    'Drop': []
+                }
+            },
+            'var_continuous': {}
+        }
+        for i, var_cont in enumerate(l_cont):
+
+            key = 'V' + str(i)
+            dic_ts['var_continuous'][key] = {
+                'name': var_cont,
+                'variable_db': var_cont,
+                # 'categorical_low': ['Post'],
+                'Drop': [],
+                'drop_decile': [],
+                'drop_value': []
+            }
+        return dic_ts
+    elif method == 2:
+        dic_Low = {'var_continuous': {}, 'var_categorical_low': {}}
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+            dic_Low['var_continuous'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'drop_value': []
+            }
+
+        for i, cat in enumerate(l_low):
+            key = 'V' + str(i)
+            dic_Low['var_categorical_low'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'Drop': []
+            }
+
+        return dic_Low
+    elif method == 3:
+        dic_high = {'var_continuous': {}, 'var_categorical_high': {}}
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+            dic_high['var_continuous'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'drop_value': []
+            }
+
+        for i, cat in enumerate(l_high):
+            key = 'V' + str(i)
+            dic_high['var_categorical_high'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'Drop': []
+            }
+
+        return dic_high
+    elif method == 4:
+
+        dic_highLow = {
+            'var_continuous': {},
+            'var_categorical_high': {},
+            'var_categorical_low': {}
+        }
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+            dic_highLow['var_continuous'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'drop_value': []
+            }
+
+        for i, cat in enumerate(l_high):
+            key = 'V' + str(i)
+            dic_highLow['var_categorical_high'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'Drop': []
+            }
+
+        for i, cat in enumerate(l_low):
+            key = 'V' + str(i)
+            dic_highLow['var_categorical_low'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'Drop': []
+            }
+        return dic_highLow
+    elif method == 5:
+        dic_scatter = {'var_Y': {}, 'var_X': {}}
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+
+            dic_scatter['var_Y'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'drop_value': []
+            }
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+
+            dic_scatter['var_X'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'drop_value': []
+            }
+
+        return dic_scatter
+    elif method == 6:
+
+        dic_scatterG = {'var_Y': {}, 'var_X': {}, 'var_grouping': {}}
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+
+            dic_scatterG['var_Y'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'drop_value': []
+            }
+
+        for i, cont in enumerate(l_cont):
+            key = 'V' + str(i)
+
+            dic_scatterG['var_X'][key] = {
+                'name': cont,
+                'variable_db': cont,
+                'drop_decile': [],
+                'color': [],
+                'drop_value': []
+            }
+        for i, cat in enumerate(l_cat):
+            key = 'V' + str(i)
+
+            dic_scatterG['var_grouping'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'Drop': []
+            }
+
+        return dic_scatterG
+
+
+    elif method == 7:
+        dic_cat = {'var_columns': {}, 'var_rows': {}}
+
+        for i, cat in enumerate(l_cat):
+            key = 'V' + str(i)
+
+            dic_cat['var_columns'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'Drop': []
+            }
+
+        for i, cat in enumerate(l_cat):
+            key = 'V' + str(i)
+
+            dic_cat['var_rows'][key] = {
+                'name': cat,
+                'variable_db': cat,
+                'values': [],
+                'Drop': []
+            }
+        return dic_cat
+
+
 def highlight_reject(s):
 	'''
 	highlight the maximum in a Series yellow.
@@ -1010,9 +1209,12 @@ def computation_continuousHigh(df,
 							   dic_df,
 							   index_continuous,
 							   index_cat,
+							   var_cat_color,
 							   log,
 							   sample=False):
 	"""
+	var_cat_color is the variable to add color:
+	Can be a var name or False
 	"""
 
 	var_continuous = dic_df['var_continuous'][index_continuous][
@@ -1031,7 +1233,7 @@ def computation_continuousHigh(df,
 
 	drop_categorical = dic_df['var_categorical_high'][index_cat]['Drop']
 
-	var_cat_color = dic_df['var_categorical_high'][index_cat]['color']
+	#var_cat_color = dic_df['var_categorical_high'][index_cat]['color']
 
 	df_var = df[[var_continuous, var_categorical]]
 
@@ -1091,8 +1293,8 @@ def computation_continuousHigh(df,
 
 	# print(var_cat_color)
 
-	if len(var_cat_color) > 0:
-		df_color = df[[var_categorical, var_cat_color[0]]]
+	if var_cat_color != False:
+		df_color = df[[var_categorical, var_cat_color]]
 		df_color = df_color.drop_duplicates()
 
 		sum_y_group = pd.merge(
@@ -1140,6 +1342,7 @@ def summary_continuous_high_dimension(df,
 									  log=False,
 									  sample=False,
 									  variables=False,
+									  var_cat_color = False,
 									  sheetid=False,
 									  sheetName=False,
 									  move_to_drive=False,
@@ -1184,6 +1387,7 @@ def summary_continuous_high_dimension(df,
 					dic_df=dic_multiple,
 					index_continuous=index_continuous,
 					index_cat=index_cat,
+					var_cat_color = False,
 					log=log,
 					sample=False)
 
@@ -1293,6 +1497,7 @@ def summary_continuous_high_dimension(df,
 			dic_df=dic_multiple,
 			index_continuous=index_continuous,
 			index_cat=index_cat,
+			var_cat_color = var_cat_color,
 			log=log,
 			sample=False)
 
@@ -1302,8 +1507,9 @@ def summary_continuous_high_dimension(df,
 		var_categorical = temp_comp['output'][6]
 		name_continuous = temp_comp['output'][7]
 		name_categorical = temp_comp['output'][8]
+		####
 		var_cat_color = temp_comp['output'][9]
-		df_var = temp_comp['output'][10]
+		#df_var = temp_comp['output'][10]
 
 		summary_ = widgets.Output()
 		summary_tukey = widgets.Output()
@@ -1327,21 +1533,32 @@ def summary_continuous_high_dimension(df,
 			#]).loc
 			#### change color cells by griup
 
-			unique_color = df[var_cat_color[0]].unique()
-			unique_group_c = setcolors(unique_color)
+			if var_cat_color != False:
+				unique_color = df[var_cat_color].unique()
+				unique_group_c = setcolors(unique_color)
 
-			print('the global average is {0}'.format(sum_y['Mean']))
-			temp = sum_y_group.rename(
+				print('the global average is {0}'.format(sum_y['Mean']))
+				temp = sum_y_group.rename(
 					index=str, columns={var_categorical: name_categorical})
-			cm = sns.light_palette("green", as_cmap=True)
-			temp = (temp.style
-					.bar(subset=['Mean', 'N'], align='mid',
-				color=['#d65f5f', '#5fba7d'])
-					.format({
+				cm = sns.light_palette("green", as_cmap=True)
+				temp = (temp.style
+						.bar(subset=['Mean', 'N'], align='mid',
+						color=['#d65f5f', '#5fba7d'])
+						.format({
 						'SE': '±{:.2f}' })
-					.applymap(applycolors,
+						.applymap(applycolors,
 						   l_colors = unique_group_c,
-						  subset=[var_cat_color[0]]))
+						  subset=[var_cat_color]))
+			else:
+				temp = sum_y_group.rename(
+					index=str, columns={var_categorical: name_categorical})
+				cm = sns.light_palette("green", as_cmap=True)
+				temp = (temp.style
+						.bar(subset=['Mean', 'N'], align='mid',
+						color=['#d65f5f', '#5fba7d'])
+						.format({
+						'SE': '±{:.2f}' })
+						)
 
 			display(temp)
 		with summary_tukey:
@@ -1384,6 +1601,8 @@ def list_dropdownHigh(dic_df):
 def select_catHigh_eventHandler(df, dic_df):
 	"""
 	"""
+	l_cat = list(df.select_dtypes(include='object'))
+	l_cat = [False] + l_cat
 
 	x_widget = widgets.Dropdown(
 		options=list_dropdownHigh(dic_df=dic_df),
@@ -1397,6 +1616,7 @@ def select_catHigh_eventHandler(df, dic_df):
 					   log=False,
 					   sample=fixed(False),
 					   variables=x_widget,
+					   var_cat_color = l_cat,
 					   sheetid='',
 					   sheetName='',
 					   move_to_drive=False,
@@ -2141,7 +2361,7 @@ def select_scatter_eventHandler(df,
 					   {"manual": True, "auto_display": False},
 					   df=fixed(df),
 					   dic_multiple=fixed(dic_df),
-					   log=[False, 'Y', 'YX'],
+					   log=[False, 'Y', 'X', 'YX'],
 					   sample=fixed(False),
 					   variables=x_widget,
 					   folder_name = '',
@@ -2158,8 +2378,8 @@ def computation_scatterplotg1(df,
 							index_X,
 							index_cat,
 							log,
-							#aggregationY= False,
-							#aggregationX= False,
+							aggregationY= 'sum',
+							aggregationX= 'sum',
 							sample=False):
 
 	"""
@@ -2267,11 +2487,10 @@ def computation_scatterplotg1(df,
 
 	# Aggregate
 
-	# if len(var_col) > 0:
-	#    df_agg =  df_1.groupby(var_group).agg({
-	#    var_y:aggregationY,
-	#    var_x:aggregationX,
-	#    })
+	df_agg =  df_1.groupby(var_group).agg({
+		var_y:aggregationY,
+		var_x:aggregationX,
+		})
 	# else:
 	#    df_agg =  df_1.groupby([var_group, var_col[0]]).agg({
 	#    var_y:aggregationY,
@@ -2281,7 +2500,8 @@ def computation_scatterplotg1(df,
 	dic_int = {
 		'output': [
 			df_1, df_stat, var_y, var_x, name_y,
-			name_x, var_group, name_group, var_col,groups
+			name_x, var_group, name_group, var_col,groups,
+			df_agg
 		]
 	}
 
@@ -2291,6 +2511,8 @@ def scatterplot_categorical(df,
 							dic_multiple,
 							variables=False,
 							log=False,
+							aggregationY= 'sum',
+							aggregationX= 'sum',
 							move_to_drive=False,
 							folder_name=False,
 							verbose=False):
@@ -2338,6 +2560,8 @@ def scatterplot_categorical(df,
 														index_Y=index_Y,
 														index_X=index_X,
 														index_cat=index_cat,
+														aggregationY= aggregationY,
+														aggregationX= aggregationX,
 														log=log,
 														sample=False)
 
@@ -2415,6 +2639,8 @@ def scatterplot_categorical(df,
 											index_Y=index_Y,
 											index_X=index_X,
 											index_cat=index_cat,
+											aggregationY= aggregationY,
+											aggregationX= aggregationX,
 											log=log,
 											sample=False)
 
@@ -2428,16 +2654,19 @@ def scatterplot_categorical(df,
 		name_group = temp_comp['output'][7]
 		var_col = temp_comp['output'][8]
 		groups = temp_comp['output'][9]
+		df_agg = temp_comp['output'][10]
 
 		summary_ = widgets.Output()
 		summary_plot = widgets.Output()
 		summary_plot_color = widgets.Output()
+		summary_agg = widgets.Output()
 
-		tab_contents = [summary_, summary_plot]
+		tab_contents = [summary_agg,summary_plot, summary_]
 		tab = widgets.Tab(tab_contents)
-		tab.set_title(0, 'Linear regression')
+		tab.set_title(0, 'Plot scatter, aggregated')
 		tab.set_title(1, 'Plot scatter')
-		tab.set_title(2, 'Plot scatter, with color')
+		tab.set_title(2, 'Linear regression')
+
 
 		display(tab)
 
@@ -2468,6 +2697,37 @@ def scatterplot_categorical(df,
 				g = (g.map(plt.scatter, var_x, var_y, edgecolor="w")
 							 .add_legend())
 			plt.show()
+
+		with summary_agg:
+			df_agg = df_agg.reset_index()
+
+			data = [
+				go.Scatter(
+				x=df_agg[var_x],
+				y=df_agg[var_y],
+				mode='markers+text',
+				text=df_agg[var_group],
+				textposition='bottom center'
+				)
+			]
+
+			if log == False:
+				name_graph_save = "Scatterplot of " + \
+					aggregationY + '-' + name_y + ' and ' + aggregationX+ '-' +\
+					 name_x + ' grouped by ' + name_group
+			else:
+				name_graph_save = "Scatterplot " + \
+					aggregationY + '-' + name_y + ' and ' + aggregationX+ '-' +\
+					 name_x + ' grouped by ' + name_group +\
+					' in log of ' + log
+
+			layout = go.Layout(
+					title=name_graph_save
+					)
+
+			fig = go.Figure(data=data, layout=layout)
+			fig.layout.template = 'plotly_dark'
+			iplot(fig)
 
 def list_dropdownscatterG(dic_df):
 	"""
@@ -2503,9 +2763,11 @@ def select_scatterGroup_eventHandler(df,
 					   {"manual": True, "auto_display": False},
 					   df=fixed(df),
 					   dic_multiple=fixed(dic_df),
-					   log=[False, 'Y', 'YX'],
+					   log=[False, 'Y', 'X','YX'],
 					   sample=fixed(False),
 					   variables=x_widget,
+					   aggregationY= ['sum', 'median', 'mean', 'min', 'max'],
+					  aggregationX= ['sum', 'median', 'mean', 'min', 'max'],
 					   folder_name='',
 					   move_to_drive=False,
 					   verbose=fixed(True))
@@ -2513,13 +2775,14 @@ def select_scatterGroup_eventHandler(df,
 #############################################################################
 #############################################################################
 #############################################################################
-##################### Scatterplot ##############
+##################### Scatterplot G1G2 ##############
 
 def computation_scatterplotg1g2(df,
 								dic_df,
 								index_Y,
 								index_X,
 								index_cat,
+								var_col,
 								log,
 								sample=False):
 
@@ -2540,13 +2803,13 @@ def computation_scatterplotg1g2(df,
 
 	drop_grouping = dic_df['var_grouping'][index_cat]['Drop']
 
-	var_col = dic_df['var_X'][index_X]['color']
+	#var_col = dic_df['var_X'][index_X]['color']
 
 	drop_x = dic_df['var_X'][index_X]['drop_value']
 	drop_decil_x = dic_df['var_X'][index_X]['drop_decile']
 
-	if len(var_col) > 0:
-		df_var = df[[var_y, var_x, var_group, var_col[0]]]
+	if var_col != False:
+		df_var = df[[var_y, var_x, var_group, var_col]]
 	else:
 		df_var = df[[var_y, var_x, var_group]]
 
@@ -2610,8 +2873,8 @@ def computation_scatterplotg1g2(df,
 	else:
 		df_1 = df_var.copy()
 
-	if len(var_col) > 0:
-		df_dot = df_1.groupby([var_group, var_col[0]]).agg({
+	if var_col != False:
+		df_dot = df_1.groupby([var_group, var_col]).agg({
 			var_y: ['mean', 'median', 'sum'],
 			var_x: ['mean', 'median', 'sum']})
 	else:
@@ -2644,9 +2907,8 @@ def scatter_g1_g2(df,
 				  dic_multiple,
 				  log=False,
 				  variables=False,
-				  filter_=False,
-				  group_to_filter=False,
-				  sheetid=False,
+				  var_col = False,
+				  spreadsheetID=False,
 				  sheetName=False,
 				  move_to_drive=False,
 				  verbose=False):
@@ -2697,6 +2959,7 @@ def scatter_g1_g2(df,
 															index_Y=index_Y,
 															index_X=index_X,
 															index_cat=index_cat,
+															var_col = var_col,
 															log=log,
 															sample=False)
 
@@ -2732,7 +2995,7 @@ def scatter_g1_g2(df,
 					}
 
 					cdr.add_data_to_spreadsheet(data=table_output['df_dot'],
-												sheetID=sheetid,
+												sheetID=spreadsheetID,
 												sheetName=sheetName,
 												rangeData=table_output['range_dot'],
 												headers=table_output['header_dot'])
@@ -2769,6 +3032,7 @@ def scatter_g1_g2(df,
 											  index_Y=index_Y,
 											  index_X=index_X,
 											  index_cat=index_cat,
+											  var_col = var_col,
 											  log=log,
 											  sample=False)
 
@@ -2783,29 +3047,22 @@ def scatter_g1_g2(df,
 		var_col = temp_comp['output'][8]
 
 		summary_plot = widgets.Output()
-
 		summary_plot1 = widgets.Output()
 		summary_plot2 = widgets.Output()
-		summary_plot3 = widgets.Output()
 
-		if filter_ == False:
-			tab_contents = [summary_plot, summary_plot1, summary_plot2]
-			tab = widgets.Tab(tab_contents)
-		else:
-			tab_contents = [summary_plot, summary_plot1, summary_plot2,
-							summary_plot3]
-			tab = widgets.Tab(tab_contents)
-			tab.set_title(3, 'Scatter plot, group & filter')
+		tab_contents = [summary_plot2, summary_plot, summary_plot1]
+		tab = widgets.Tab(tab_contents)
 
-		tab.set_title(0, 'Scatter plot')
-		tab.set_title(1, 'Scatter plot, color')
-		tab.set_title(2, 'Scatter plot, group')
+		tab.set_title(0, 'Scatter plot, filter')
+		tab.set_title(1, 'Scatter plot')
+		tab.set_title(2, 'Scatter plot, color')
+
 
 		display(tab)
 
 		for i, stat in enumerate(['_mean', '_median', '_sum']):
 			filter_col = [col for col in df_dot if col.endswith(stat)]
-			filter_col.append(var_col[0])
+			filter_col.append(var_col)
 			filter_col.append(var_group)
 			df_scat = df_dot[filter_col]
 
@@ -2814,11 +3071,12 @@ def scatter_g1_g2(df,
 
 			if log == False:
 				name_graph_save = "Scatterplot with line of best fit of " + \
-				 name_y + ' and ' + name_x + ' aggregated by' + stat
+				 name_y + ' and ' + name_x + ' aggregated by' + stat + \
+				  ' for ' + var_group + ' and ' + var_col
 			else:
 				name_graph_save = "Scatterplot with line of best fit of " + \
 				name_y + ' and ' + name_x + ' aggregated by' + stat +\
-				' in log of ' + log
+				 ' for ' + var_group + ' and ' + var_col + ' in log of ' + log
 
 			with summary_plot:
 				#if stat == '_sum':
@@ -2828,42 +3086,40 @@ def scatter_g1_g2(df,
 
 			with summary_plot1:
 				#if stat == '_sum':
+				if len(df_scat[var_col].unique()) > 10:
+					legend = False
+				else:
+					legend = 'full'
 				ax= sns.scatterplot(x=x, y=y,
-										hue = var_col[0],
-										data=df_scat)
+										hue = var_col,
+										data=df_scat,
+										legend = legend)
 				ax.set_title(name_graph_save)
 				plt.show()
 
-		if (filter_ != False) & (stat == '_sum'):
+			if stat == '_sum':
+				with summary_plot2:
+					#df_scat_r = df_scat.pivot(index=var_col, columns=var_group,
+						 #values= [x, y])
+					df_scat_f = df_scat
 
+					iplot({
+						'data': [
+							{
+							'x': df_scat_f[df_scat_f[var_col]==g][x],
+							'y': df_scat_f[df_scat_f[var_col]==g][y],
+							'name': g, 'mode': 'markers',
+							'text':df_scat_f[var_group],
+							} for g in list(df_scat_f[var_col].unique())
+						],
+			'layout': {
+			'xaxis': {'title': name_x},
+			'yaxis': {'title': name_y}
+					}
+			})
 
-				with summary_plot3:
+					#display(df_scat)
 
-					#### Scatter with sum
-					df_dup = df[[var_group, filter_]].drop_duplicates()
-
-					df_dot = pd.merge(df_dot, df_dup,
-						 how= 'inner' , on = [var_group
-											  ])
-
-					df_dot_filtered = df_dot[df_dot[filter_] == group_to_filter]
-
-					#### Scatter with raw
-
-					df_dot_r = df[[var_y, var_col[0], var_x, var_group, filter_]]
-
-
-					df_dot_filtered_raw = df_dot_r[df_dot_r[filter_] == group_to_filter]
-
-
-					fig, axarr = plt.subplots(1, 2, figsize=(12, 12))
-					ax = sns.scatterplot(x=x, y=y, hue = var_col[0], data=df_dot_filtered,
-										 ax= axarr[0])
-					ax = sns.scatterplot(x=var_x, y=var_y, hue = var_col[0], data=df_dot_filtered_raw,
-										 ax= axarr[1])
-
-					fig.suptitle(y + ' VS '+ x + ' filter by '+ str(group_to_filter))
-					plt.show()
 
 def select_scatterGroup2_eventHandler(df,
 									 dic_df
@@ -2881,13 +3137,12 @@ def select_scatterGroup2_eventHandler(df,
 					   {"manual": True, "auto_display": False},
 					   df=fixed(df),
 					   dic_multiple=fixed(dic_df),
-					   log=[False, 'Y', 'YX'],
+					   log=[False, 'Y', 'X','YX'],
 					   sample=fixed(False),
 					   variables=x_widget,
-					   filter_= l_filter,
-					   group_to_filter = '',
+					   var_col = l_filter,
 					   spreadsheetID = '',
-					  sheetName = '',
+					   sheetName = '',
 					   move_to_drive=False,
 					   verbose=fixed(True))
 
@@ -3488,7 +3743,8 @@ wid_scatter2 = widgets.Output()
 wid_cat = widgets.Output()
 wid_fe = widgets.Output()
 ####### Define tab widgets
-def PyAnalysis(dataframe, dic_ts = False, dic_Low = False, dic_high = False,
+def PyAnalysis(dataframe, automatic = True, Date = False,
+ dic_ts = False, dic_Low = False, dic_high = False,
 dic_HighLow = False, dic_scatter = False, dic_scatterg1 = False,
 dic_scatterg2 = False, dic_cat = False):
 	"""
@@ -3506,6 +3762,15 @@ dic_scatterg2 = False, dic_cat = False):
 	wid_scatter2.clear_output()
 	wid_cat.clear_output()
 	wid_fe.clear_output()
+
+	if automatic:
+		dic_ts = create_all_keys(dataframe, date=Date, method=1)
+		dic_Low = create_all_keys(dataframe, date=Date, method=2)
+		dic_high = create_all_keys(dataframe, date=Date, method=3)
+		dic_HighLow = create_all_keys(dataframe, date=Date, method=4)
+		dic_scatter = create_all_keys(dataframe, date=Date, method=5)
+		dic_scatterg1 = create_all_keys(dataframe, date=Date, method=6)
+		dic_cat = create_all_keys(dataframe, date=Date, method=7)
 
 	with wid_quick:
 		display(make_quickstart(df = dataframe))
@@ -3536,7 +3801,7 @@ dic_scatterg2 = False, dic_cat = False):
 
 	with wid_scatter2:
 		display(select_scatterGroup2_eventHandler(df = dataframe,
-		dic_df = dic_scatterg2))
+		dic_df = dic_scatterg1))
 
 	with wid_cat:
 		display(select_cat_eventHandler(df = dataframe,
