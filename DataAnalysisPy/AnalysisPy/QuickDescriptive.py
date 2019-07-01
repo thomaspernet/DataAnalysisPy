@@ -39,202 +39,202 @@ alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N',
 ###### Define extra functions
 
 def create_all_keys(df, date, method=1):
-    """
+	"""
 
-    """
-    l_cont = list(df.select_dtypes(include=['int', 'float']))
-    l_cont = list(df.select_dtypes(include=['int', 'float']))
-    l_cat = list(df.select_dtypes(include='object'))
+	"""
+	l_cont = list(df.select_dtypes(include=['int', 'float']))
+	l_cont = list(df.select_dtypes(include=['int', 'float']))
+	l_cat = list(df.select_dtypes(include='object'))
 
-    l_low = []
-    l_high = []
-    for x in l_cat:
-        count = df[x].nunique()
-        if count > 10:
-            l_high.append(x)
-        else:
-            l_low.append(x)
+	l_low = []
+	l_high = []
+	for x in l_cat:
+		count = df[x].nunique()
+		if count > 10:
+			l_high.append(x)
+		else:
+			l_low.append(x)
 
-    if method == 1:
-        dic_ts = {
-            'var_date': {
-                'V0': {
-                    'name': date,
-                    'variable_db': date,
-                    'Drop': []
-                }
-            },
-            'var_continuous': {}
-        }
-        for i, var_cont in enumerate(l_cont):
+	if method == 1:
+		dic_ts = {
+			'var_date': {
+				'V0': {
+					'name': date,
+					'variable_db': date,
+					'Drop': []
+				}
+			},
+			'var_continuous': {}
+		}
+		for i, var_cont in enumerate(l_cont):
 
-            key = 'V' + str(i)
-            dic_ts['var_continuous'][key] = {
-                'name': var_cont,
-                'variable_db': var_cont,
-                # 'categorical_low': ['Post'],
-                'Drop': [],
-                'drop_decile': [],
-                'drop_value': []
-            }
-        return dic_ts
-    elif method == 2:
-        dic_Low = {'var_continuous': {}, 'var_categorical_low': {}}
+			key = 'V' + str(i)
+			dic_ts['var_continuous'][key] = {
+				'name': var_cont,
+				'variable_db': var_cont,
+				# 'categorical_low': ['Post'],
+				'Drop': [],
+				'drop_decile': [],
+				'drop_value': []
+			}
+		return dic_ts
+	elif method == 2:
+		dic_Low = {'var_continuous': {}, 'var_categorical_low': {}}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
-            dic_Low['var_continuous'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'drop_value': []
-            }
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
+			dic_Low['var_continuous'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'drop_value': []
+			}
 
-        for i, cat in enumerate(l_low):
-            key = 'V' + str(i)
-            dic_Low['var_categorical_low'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'Drop': []
-            }
+		for i, cat in enumerate(l_low):
+			key = 'V' + str(i)
+			dic_Low['var_categorical_low'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'Drop': []
+			}
 
-        return dic_Low
-    elif method == 3:
-        dic_high = {'var_continuous': {}, 'var_categorical_high': {}}
+		return dic_Low
+	elif method == 3:
+		dic_high = {'var_continuous': {}, 'var_categorical_high': {}}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
-            dic_high['var_continuous'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'drop_value': []
-            }
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
+			dic_high['var_continuous'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'drop_value': []
+			}
 
-        for i, cat in enumerate(l_high):
-            key = 'V' + str(i)
-            dic_high['var_categorical_high'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'Drop': []
-            }
+		for i, cat in enumerate(l_high):
+			key = 'V' + str(i)
+			dic_high['var_categorical_high'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'Drop': []
+			}
 
-        return dic_high
-    elif method == 4:
+		return dic_high
+	elif method == 4:
 
-        dic_highLow = {
-            'var_continuous': {},
-            'var_categorical_high': {},
-            'var_categorical_low': {}
-        }
+		dic_highLow = {
+			'var_continuous': {},
+			'var_categorical_high': {},
+			'var_categorical_low': {}
+		}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
-            dic_highLow['var_continuous'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'drop_value': []
-            }
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
+			dic_highLow['var_continuous'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'drop_value': []
+			}
 
-        for i, cat in enumerate(l_high):
-            key = 'V' + str(i)
-            dic_highLow['var_categorical_high'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'Drop': []
-            }
+		for i, cat in enumerate(l_high):
+			key = 'V' + str(i)
+			dic_highLow['var_categorical_high'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'Drop': []
+			}
 
-        for i, cat in enumerate(l_low):
-            key = 'V' + str(i)
-            dic_highLow['var_categorical_low'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'Drop': []
-            }
-        return dic_highLow
-    elif method == 5:
-        dic_scatter = {'var_Y': {}, 'var_X': {}}
+		for i, cat in enumerate(l_low):
+			key = 'V' + str(i)
+			dic_highLow['var_categorical_low'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'Drop': []
+			}
+		return dic_highLow
+	elif method == 5:
+		dic_scatter = {'var_Y': {}, 'var_X': {}}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
 
-            dic_scatter['var_Y'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'drop_value': []
-            }
+			dic_scatter['var_Y'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'drop_value': []
+			}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
 
-            dic_scatter['var_X'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'drop_value': []
-            }
+			dic_scatter['var_X'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'drop_value': []
+			}
 
-        return dic_scatter
-    elif method == 6:
+		return dic_scatter
+	elif method == 6:
 
-        dic_scatterG = {'var_Y': {}, 'var_X': {}, 'var_grouping': {}}
+		dic_scatterG = {'var_Y': {}, 'var_X': {}, 'var_grouping': {}}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
 
-            dic_scatterG['var_Y'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'drop_value': []
-            }
+			dic_scatterG['var_Y'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'drop_value': []
+			}
 
-        for i, cont in enumerate(l_cont):
-            key = 'V' + str(i)
+		for i, cont in enumerate(l_cont):
+			key = 'V' + str(i)
 
-            dic_scatterG['var_X'][key] = {
-                'name': cont,
-                'variable_db': cont,
-                'drop_decile': [],
-                'color': [],
-                'drop_value': []
-            }
-        for i, cat in enumerate(l_cat):
-            key = 'V' + str(i)
+			dic_scatterG['var_X'][key] = {
+				'name': cont,
+				'variable_db': cont,
+				'drop_decile': [],
+				'color': [],
+				'drop_value': []
+			}
+		for i, cat in enumerate(l_cat):
+			key = 'V' + str(i)
 
-            dic_scatterG['var_grouping'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'Drop': []
-            }
+			dic_scatterG['var_grouping'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'Drop': []
+			}
 
-        return dic_scatterG
+		return dic_scatterG
 
 
-    elif method == 7:
-        dic_cat = {'var_columns': {}, 'var_rows': {}}
+	elif method == 7:
+		dic_cat = {'var_columns': {}, 'var_rows': {}}
 
-        for i, cat in enumerate(l_cat):
-            key = 'V' + str(i)
+		for i, cat in enumerate(l_cat):
+			key = 'V' + str(i)
 
-            dic_cat['var_columns'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'Drop': []
-            }
+			dic_cat['var_columns'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'Drop': []
+			}
 
-        for i, cat in enumerate(l_cat):
-            key = 'V' + str(i)
+		for i, cat in enumerate(l_cat):
+			key = 'V' + str(i)
 
-            dic_cat['var_rows'][key] = {
-                'name': cat,
-                'variable_db': cat,
-                'values': [],
-                'Drop': []
-            }
-        return dic_cat
+			dic_cat['var_rows'][key] = {
+				'name': cat,
+				'variable_db': cat,
+				'values': [],
+				'Drop': []
+			}
+		return dic_cat
 
 
 def highlight_reject(s):
@@ -308,12 +308,19 @@ def hexbin(x, y, color, **kwargs):
 	plt.rcParams['font.serif'] = ['SimHei']
 	plt.hexbin(x, y, gridsize=10, cmap=cmap, **kwargs)
 
-######## Define function for the tab's widgets
+###### Initialize Google drive cdr
+
+#############################################################################
+#############################################################################
+#############################################################################
+##################### QUICKSTART ##############
+
 def quickstat(df,
 			  export=False,
 			  move_to_drive=False,
 			  name="output",
-			  folder=False):
+			  folder=False,
+			  cdr = False):
 	"""
 	The function compute the summary statistic of the dataframe from
 	pandas's pandas_profiling function.
@@ -337,7 +344,7 @@ def quickstat(df,
 
 	return display(profile)
 
-def make_quickstart(df):
+def make_quickstart(df, cdr = False):
 	"""
 	This function use IPython widget interactive to allow interactivity
 	with the function quickstat.
@@ -353,7 +360,8 @@ def make_quickstart(df):
 					   name='',
 					   folder='',
 					   export=False,
-					   move_to_drive=False
+					   move_to_drive=False,
+					   cdr = fixed(cdr)
 					   )
 
 #############################################################################
@@ -476,14 +484,116 @@ def computation_ts(df, dic_df, index_var, group=False):
 
 	return dic_int
 
+def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow, df_var, var_date,
+ 				name_continuous, group,var_continuous, df_melt):
+	"""
+	"""
+
+	fig, axarr = plt.subplots(1, 2, figsize=(12, 8))
+	g = sns.lineplot(x=var_date,
+			 y=name_continuous,
+			 hue=var_continuous,
+			 data=df_melt, ax=axarr[0])
+	g = sns.lineplot(x=var_date,
+			 y='sum',
+			 data=y, ax=axarr[1])
+	fig.suptitle('Mean/median & Sum of ' + name_continuous)
+
+	y = y.fillna('')
+	n_rows = y.shape[0]
+	nb_cols = y.shape[1] + 2
+	nb_rows = LatestRow + n_rows + 6
+	# Rename columns
+	y.columns = [var_date, 'mean_' + name_continuous,
+				 'median_' + name_continuous,
+				 'sum_' + name_continuous,
+				 'diff'
+				 ]
+
+	for i, letter in enumerate(alphabet):
+		if i == nb_cols:
+			range_2_letter = letter
+		if i + 2 == nb_cols:
+			range_1_letter = letter
+
+	if group != False:
+		y_g = df_var.groupby([var_date, group]).agg({
+			var_continuous: ['mean',
+							 'median',
+							 'sum']})
+		y_g.columns = y_g.columns.droplevel()
+		y_g = y_g.reset_index()
+
+		y_g.columns = [var_date,
+					   group,
+					   'mean_' + name_continuous,
+					   'median_' + name_continuous,
+					   'sum_' + name_continuous
+					   ]
+
+		dic_range = {
+
+			'range_ts': "A" + str(LatestRow + 4) + ':' + str(range_1_letter) +
+			str(nb_rows),
+			'range_ts_g': "G" + str(LatestRow + 4) + ':Z' +
+			str(LatestRow + y_g.shape[0] + 6)
+		}
+
+# make graph with seaborn as save image to drive
+
+		dic_df = {
+			'df_ts': y.to_numpy().tolist(),
+			'df_tsg': y_g.to_numpy().tolist(),
+			'headers_ts': list(y),
+			'header_tsg': list(y_g),
+			'range_ts': dic_range
+		}
+
+		cdr.add_data_to_spreadsheet(data=dic_df['df_tsg'],
+									sheetID=sheetID,
+									sheetName=sheetName,
+									rangeData=dic_df['range_ts']['range_ts_g'],
+									headers=dic_df['header_tsg'])
+
+	else:
+
+		dic_range = {
+
+			'range_ts': "A" + str(LatestRow + 4) + ':' + str(range_1_letter) +
+			str(nb_rows)
+		}
+
+		dic_df = {
+			'df_ts': y.to_numpy().tolist(),
+			'headers_ts': list(y),
+			'range_ts': dic_range
+		}
+
+	cdr.add_data_to_spreadsheet(data=dic_df['df_ts'],
+								sheetID=sheetID,
+								sheetName=sheetName,
+								rangeData=dic_df['range_ts']['range_ts'],
+								headers=dic_df['headers_ts'])
+
+	name_ = 'Mean-median_&_Sum_of_' + name_continuous + '.png'
+	g.get_figure().savefig(name_)
+	mime_type = "image/png"
+	cdr.upload_file_root(mime_type, name_)
+	cdr.move_file(file_name=name_,
+				  folder_name=folder)
+	os.remove(name_)
+
+
 def time_series_gs(df,
 				   dic_multiple,
 				   variable=False,
 				   group=False,
-				   sheetid=False,
+				   sheetID=False,
 				   sheetName=False,
 				   folder=False,
 				   move_to_drive=False,
+				   move_to_drive_batch=False,
+				   cdr = False,
 				   verbose=True):
 	"""
 	The function inputs:
@@ -505,7 +615,7 @@ def time_series_gs(df,
 	"""
 
 
-	if move_to_drive:
+	if move_to_drive_batch:
 		max_ = len(dic_multiple['var_continuous'])
 		f = IntProgress(min=0, max=max_ + 1, description='Loading:') # instantiate the bar
 		display(f)
@@ -538,109 +648,32 @@ def time_series_gs(df,
 			name_continuous = temp_comp['output'][4]
 			df_melt = temp_comp['output'][6]
 
+
+
 		##### Make seaborn graph: includes mean + median in a single graph
 		##### right side of the grah is the sum
-			fig, axarr = plt.subplots(1, 2, figsize=(12, 8))
-			g = sns.lineplot(x=var_date,
-					 y=name_continuous,
-					 hue=var_continuous,
-					 data=df_melt, ax=axarr[0])
-			g = sns.lineplot(x=var_date,
-					 y='sum',
-					 data=y, ax=axarr[1])
-			fig.suptitle('Mean/median & Sum of ' + name_continuous)
-
 		# Loop over each value of  var continuous
 		# for key, value in dic_ts['var_continuous'].items():
 		# Need to open the spreadsheet to know the latest none
 		# empty cell
 		# Objective of moving to drive is to do batch computation
-			LatestRow = cdr.getLatestRow(sheetID=sheetid,
+			LatestRow = cdr.getLatestRow(sheetID=sheetID,
 										 sheetName=sheetName)
 
-			y = y.fillna('')
-			n_rows = y.shape[0]
-			nb_cols = y.shape[1] + 2
-			nb_rows = LatestRow + n_rows + 6
-			# Rename columns
-			y.columns = [var_date, 'mean_' + name_continuous,
-						 'median_' + name_continuous,
-						 'sum_' + name_continuous,
-						 'diff'
-						 ]
+			saveToDriveTS(
+				cdr = cdr,
+				sheetID=sheetID,
+				sheetName=sheetName,
+				folder=folder,
+				y = y,
+				LatestRow = LatestRow,
+				df_var = df_var,
+				var_date = var_date,
+				name_continuous = name_continuous,
+				group=group,
+				var_continuous= var_continuous,
+				df_melt = df_melt)
 
-			for i, letter in enumerate(alphabet):
-				if i == nb_cols:
-					range_2_letter = letter
-				if i + 2 == nb_cols:
-					range_1_letter = letter
-
-			if group != False:
-				y_g = df_var.groupby([var_date, group]).agg({
-					var_continuous: ['mean',
-									 'median',
-									 'sum']})
-				y_g.columns = y_g.columns.droplevel()
-				y_g = y_g.reset_index()
-
-				y_g.columns = [var_date,
-							   group,
-							   'mean_' + name_continuous,
-							   'median_' + name_continuous,
-							   'sum_' + name_continuous
-							   ]
-
-				dic_range = {
-
-					'range_ts': "A" + str(LatestRow + 4) + ':' + str(range_1_letter) +
-					str(nb_rows),
-					'range_ts_g': "G" + str(LatestRow + 4) + ':Z' +
-					str(LatestRow + y_g.shape[0] + 6)
-				}
-
-	# make graph with seaborn as save image to drive
-
-				dic_df = {
-					'df_ts': y.to_numpy().tolist(),
-					'df_tsg': y_g.to_numpy().tolist(),
-					'headers_ts': list(y),
-					'header_tsg': list(y_g),
-					'range_ts': dic_range
-				}
-
-				cdr.add_data_to_spreadsheet(data=dic_df['df_tsg'],
-											sheetID=sheetid,
-											sheetName=sheetName,
-											rangeData=dic_df['range_ts']['range_ts_g'],
-											headers=dic_df['header_tsg'])
-
-			else:
-
-				dic_range = {
-
-					'range_ts': "A" + str(LatestRow + 4) + ':' + str(range_1_letter) +
-					str(nb_rows)
-				}
-
-				dic_df = {
-					'df_ts': y.to_numpy().tolist(),
-					'headers_ts': list(y),
-					'range_ts': dic_range
-				}
-
-			cdr.add_data_to_spreadsheet(data=dic_df['df_ts'],
-										sheetID=sheetid,
-										sheetName=sheetName,
-										rangeData=dic_df['range_ts']['range_ts'],
-										headers=dic_df['headers_ts'])
-
-			name_ = 'Mean-median_&_Sum_of_' + name_continuous + '.png'
-			g.get_figure().savefig(name_)
-			mime_type = "image/png"
-			cdr.upload_file_root(mime_type, name_)
-			cdr.move_file(file_name=name_,
-						  folder_name=folder)
-			os.remove(name_)
 		f.value += 1
 
 	##### Create the tab and plot it in the jupyter
@@ -660,6 +693,24 @@ def time_series_gs(df,
 		name_continuous = temp_comp['output'][4]
 		name_date= temp_comp['output'][5]
 		df_melt = temp_comp['output'][6]
+
+		if move_to_drive:
+			##### To complicated to save pictures with Plotly locally
+			LatestRow = cdr.getLatestRow(sheetID=sheetID,
+										 sheetName=sheetName)
+			saveToDriveTS(
+			cdr = cdr,
+			sheetID=sheetID,
+			sheetName=sheetName,
+			folder=folder,
+			y = y,
+			LatestRow = LatestRow,
+			df_var = df_var,
+			var_date = var_date,
+			name_continuous = name_continuous,
+			group=group,
+			var_continuous= var_continuous,
+			df_melt = df_melt)
 
 		##### Define theme of plotly
 		cf.go_offline()
@@ -739,7 +790,7 @@ def time_series_gs(df,
 								   title='Evolution of ' + name_continuous,
 								   shape=(2, 1))
 
-def select_TS_eventHandler(df, dic_df):
+def select_TS_eventHandler(df, dic_df, cdr = False):
 
 	"""
 	Run the interactive input for the time serie function
@@ -759,10 +810,12 @@ def select_TS_eventHandler(df, dic_df):
 					   dic_multiple=fixed(dic_df),
 					   variable = x_widget,
 					   group = l_filter,
-					   sheetid='',
+					   sheetID='',
 					   sheetName='',
 					   folder='',
 					   move_to_drive=False,
+					   move_to_drive_batch = False,
+					   cdr = fixed(cdr),
 					   verbose=fixed(True))
 
 #############################################################################
@@ -3743,7 +3796,7 @@ wid_scatter2 = widgets.Output()
 wid_cat = widgets.Output()
 wid_fe = widgets.Output()
 ####### Define tab widgets
-def PyAnalysis(dataframe, automatic = True, Date = False,
+def PyAnalysis(dataframe, automatic = True, Date = False, cdr = False,
  dic_ts = False, dic_Low = False, dic_high = False,
 dic_HighLow = False, dic_scatter = False, dic_scatterg1 = False,
 dic_scatterg2 = False, dic_cat = False):
@@ -3773,11 +3826,12 @@ dic_scatterg2 = False, dic_cat = False):
 		dic_cat = create_all_keys(dataframe, date=Date, method=7)
 
 	with wid_quick:
-		display(make_quickstart(df = dataframe))
+		display(make_quickstart(df = dataframe, cdr = cdr))
 
 	with wid_ts:
 		display(select_TS_eventHandler(df = dataframe,
-		dic_df = dic_ts))
+		dic_df = dic_ts,
+		cdr = cdr))
 
 	with wid_cont:
 		display(select_catLow_eventHandler(df = dataframe,
@@ -3812,6 +3866,7 @@ dic_scatterg2 = False, dic_cat = False):
 
 	tab = widgets.Tab([wid_quick, wid_ts, wid_cont, wid_high, wid_highLow,
 	wid_scatter, wid_scatter1, wid_scatter2, wid_cat, wid_fe])
+
 	tab.set_title(0, 'Quick description')
 	tab.set_title(1, 'Time Serie plots')
 	tab.set_title(2, 'Low dimensional group')
