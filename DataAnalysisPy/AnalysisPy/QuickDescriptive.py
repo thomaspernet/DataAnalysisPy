@@ -485,8 +485,8 @@ def computation_ts(df, dic_df, index_var, group=False):
 	return dic_int
 
 def saveToDriveTS(cdr,sheetID, sheetName, folder,y, LatestRow,
- 				  df_var, var_date,
- 			  	  name_continuous, group,var_continuous, df_melt):
+				   df_var, var_date,
+					 name_continuous, group,var_continuous, df_melt):
 	"""
 	"""
 	fig, axarr = plt.subplots(1, 2, figsize=(12, 8))
@@ -1326,7 +1326,10 @@ def computation_continuousHigh(df,
 
 	#var_cat_color = dic_df['var_categorical_high'][index_cat]['color']
 
-	df_var = df[[var_continuous, var_categorical]]
+	if var_cat_color != False:
+		df_var = df[[var_continuous, var_categorical, var_cat_color]]
+	else:
+		df_var = df[[var_continuous, var_categorical]]
 
 	# Drop if needed
 
@@ -1385,17 +1388,25 @@ def computation_continuousHigh(df,
 	# Compute summary statistic
 	# rp.summary returns a dataframe
 	sum_y = rp.summary_cont(df_1[var_continuous])
-	sum_y_group = rp.summary_cont(df_1[var_continuous].groupby(
-		df_1[var_categorical])).reset_index().sort_values(by='Mean')
+
+
+	if var_cat_color != False:
+
+		sum_y_group = rp.summary_cont(df_1.groupby(
+			[var_categorical, var_cat_color])[var_continuous]
+			).reset_index()
+	else:
+		sum_y_group = rp.summary_cont(df_1[var_continuous].groupby(
+			df_1[var_categorical])).reset_index().sort_values(by='Mean')
 
 	# print(var_cat_color)
 
-	if var_cat_color != False:
-		df_color = df[[var_categorical, var_cat_color]]
-		df_color = df_color.drop_duplicates()
+	#if var_cat_color != False:
+	#	df_color = df[[var_categorical, var_cat_color]]
+	#	df_color = df_color.drop_duplicates()
 
-		sum_y_group = pd.merge(
-			sum_y_group, df_color, on=var_categorical, how='left')
+	#	sum_y_group = pd.merge(
+	#		sum_y_group, df_color, on=var_categorical, how='left')
 
 	if sample != False:
 		df_1 = df_1.sample(frac=sample, replace=True)
@@ -1437,6 +1448,7 @@ def saveToDriveHigh(cdr = False,
 	LatestRow = False,
 	group_label = False,
 	nb_group=False,
+	var_cat_color = False,
 	df_mc=False,
 	sum_y=False,
 	sum_y_group = False,
@@ -1449,6 +1461,10 @@ def saveToDriveHigh(cdr = False,
 	n_rows = df_mc.shape[0]
 	nb_rows = n_rows + 1
 	begin = LatestRow + 4
+
+	if var_cat_color !=  False:
+		nb_group = sum_y_group.shape[0]
+		sum_y_group = sum_y_group.fillna('')
 
 	# get range for Google Sheet
 	# alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N','O',
@@ -1586,6 +1602,7 @@ def summary_continuous_high_dimension(df,
 					LatestRow = LatestRow,
 					group_label = group_label,
 					nb_group=group_label,
+					var_cat_color = var_cat_color,
 					df_mc=df_mc,
 					sum_y=sum_y,
 					sum_y_group = sum_y_group,
@@ -1647,6 +1664,7 @@ def summary_continuous_high_dimension(df,
 				LatestRow = LatestRow,
 				group_label = group_label,
 				nb_group=group_label,
+				var_cat_color = var_cat_color,
 				df_mc=df_mc,
 				sum_y=sum_y,
 				sum_y_group = sum_y_group,
@@ -1656,13 +1674,15 @@ def summary_continuous_high_dimension(df,
 		summary_ = widgets.Output()
 		summary_tukey = widgets.Output()
 		summary_heatmap = widgets.Output()
+		summary_true= widgets.Output()
 
 		tab_contents = [summary_, summary_tukey,
-		 summary_heatmap]
+		 summary_heatmap, summary_true]
 		tab = widgets.Tab(tab_contents)
 		tab.set_title(0, 'Summary Statistic')
 		tab.set_title(1, 'Tukey Results')
 		tab.set_title(2, 'Heatmap')
+		tab.set_title(3, 'True Only')
 
 		display(tab)
 
@@ -1725,6 +1745,17 @@ def summary_continuous_high_dimension(df,
 			s1 = df_mc_h.style.background_gradient(cmap='viridis')
 			# s1 = df_mc_h.style.bar(color='#d65f5f')
 			display(s1)
+
+		with summary_true:
+			df_mc_t = df_mc[df_mc['reject'] == True]
+			df_mc_t = (df_mc_t.style
+					.bar(subset=['meandiff'], align='mid',
+					color=['#d65f5f', '#5fba7d'])
+					.format({
+					'SE': '±{:.2f}' })
+					)
+
+			display(df_mc_t)
 
 def list_dropdownHigh(dic_df):
 	"""
@@ -1926,7 +1957,6 @@ def createfigurePlot(df, var_categorical_low, name_categorical_high,
 
 		df_slop_filter.sort_values(stat + '_dif', inplace=True)
 		df_slop_filter.reset_index(inplace=True)
-
 		# Draw plot
 		myFig = plt.figure(figsize=(14, 10), dpi=80)
 		plt.hlines(
@@ -2170,14 +2200,18 @@ def slope_rank(df,
 
 		with summary_plot:
 			for i, stat in enumerate(['mean', 'median', 'sum', 'per']):
-				fig_ = createfigurePlot(
-					df=df_var,
-					var_categorical_low=var_categorical_low,
-					name_categorical_high=name_categorical_high,
-					df_slope=df_slope,
-					var_continuous=var_continuous,
-					stat=stat)
-				plt.show()
+				if len(df_var[var_categorical_low].unique()) > 2:
+					print('This tab plots only graph with group containing \
+					2 unique values')
+				else:
+					fig_ = createfigurePlot(
+						df=df_var,
+						var_categorical_low=var_categorical_low,
+						name_categorical_high=name_categorical_high,
+						df_slope=df_slope,
+						var_continuous=var_continuous,
+						stat=stat)
+					plt.show()
 
 		with summary_rank:
 			classes = np.unique(
