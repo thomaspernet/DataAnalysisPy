@@ -1319,7 +1319,7 @@ def computation_continuousHigh(df,
 
 	var_categorical = dic_df['var_categorical_high'][index_cat][
 		'variable_db']
-	name_categorical = dic_df['var_categorical_high'][index_continuous]['name']
+	name_categorical = dic_df['var_categorical_high'][index_cat]['name']
 
 	drop_categorical = dic_df['var_categorical_high'][index_cat]['Drop']
 
