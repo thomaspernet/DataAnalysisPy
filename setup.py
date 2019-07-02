@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 required_package = ['numpy', 'pandas', 'seaborn', 'matplotlib',
 'scipy', 'plotly', 'researchpy', 'statsmodels', 'squarify',
-'pandas_profiling', 'cufflinks', '']
+'pandas_profiling', 'cufflinks', 'lxml']
 
 
 setuptools.setup(
