@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 required_package = ['numpy', 'pandas', 'seaborn', 'matplotlib',
 'scipy', 'plotly', 'researchpy', 'statsmodels', 'squarify',
-'']
+'pandas_profiling', 'cufflinks', '']
 
 
 setuptools.setup(
@@ -14,7 +14,7 @@ setuptools.setup(
      #scripts=['data_analysis_econometrics'] ,
      author="Thomas Pernet",
      author_email="t.pernetcoudrier@gmail.com",
-     description="A simple package to describe the data from an econometrics equation",
+     description="A simple package to describe the data",
      long_description=long_description,
      long_description_content_type="text/markdown",
      url="",
