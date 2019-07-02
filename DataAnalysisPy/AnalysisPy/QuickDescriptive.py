@@ -43,7 +43,6 @@ def create_all_keys(df, date, method=1):
 
 	"""
 	l_cont = list(df.select_dtypes(include=['int', 'float']))
-	l_cont = list(df.select_dtypes(include=['int', 'float']))
 	l_cat = list(df.select_dtypes(include='object'))
 
 	l_low = []
@@ -836,7 +835,7 @@ def computation_continuousLow(df,
 	drop_decile = dic_df['var_continuous'][index_continuous]['drop_decile']
 
 	var_categorical = dic_df['var_categorical_low'][index_cat]['variable_db']
-	name_categorical = dic_df['var_categorical_low'][index_continuous]['name']
+	name_categorical = dic_df['var_categorical_low'][index_cat]['name']
 
 	drop_categorical = dic_df['var_categorical_low'][index_cat]['Drop']
 
