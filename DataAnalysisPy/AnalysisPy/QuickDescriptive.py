@@ -4007,16 +4007,18 @@ def categorical(df,
 					   summary_contribution, summary_result, summary_ca])
 			tab.set_title(6, 'Correspondence Anasylis')
 			with summary_ca:
-				name_ = 'Correspondence Anasylis'  + '.png'
-				fig_2['figure'].savefig(name_)
-				folder_name = folder
-				mime_type = "image/png"
-				cdr.upload_file_root(mime_type, name_)
-				cdr.move_file(file_name=name_,
-							  folder_name=folder_name)
-				os.remove(name_)
-
 				display(fig_2['figure'])
+				if move_to_drive:
+					name_ = 'Correspondence Anasylis'  + '.png'
+					fig_2['figure'].savefig(name_)
+					folder_name = folder
+					mime_type = "image/png"
+					cdr.upload_file_root(mime_type, name_)
+					cdr.move_file(file_name=name_,
+							  folder_name=folder_name)
+					os.remove(name_)
+
+
 
 
 		else:
