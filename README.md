@@ -34,19 +34,19 @@ Last but not least, DataVizPy can be used to make batch computations on a set of
 
 -   Quick data analysis including the following tests:
 
--   Continuous variable analysis (Scatterplot)
--   Categorical variable (Chi test, Correspondence Analysis)
--   Mixte between continuous and categorical variables (ANOVA)
+	-   Continuous variable analysis (Scatterplot)
+	-   Categorical variable (Chi test, Correspondence Analysis)
+	-   Mixte between continuous and categorical variables (ANOVA)
 
 -   Data transformation:
 
--   log
--   standardization/normalization (forthcoming)
+	-   log
+	-   standardization/normalization (forthcoming)
 
 -   Filter the data:
 
--   quartile
--   exclude undesired values or groups
+	-   quartile
+	-   exclude undesired values or groups
 
 -   Filter the results (forthcoming)
 -   Save the results in Google Drive or CSV (forthcoming)
@@ -249,20 +249,19 @@ The output has three tabs:
 
 -   Distribution:
 
--   it plots the PDF and CDF for each group
-- ![](https://drive.google.com/uc?export=view&id=1OHhriHOgFiUAztazp0VLb50BkDWOvQNO)
+	-   it plots the PDF and CDF for each group![](https://drive.google.com/uc?export=view&id=1OHhriHOgFiUAztazp0VLb50BkDWOvQNO)
 
 
 
 -   Summary statistics:
 
--   Provides a quick summary statistics by groups such as number of obs, mean, SD, SE and 95% confidence interval
+	-   Provides a quick summary statistics by groups such as number of obs, mean, SD, SE and 95% confidence interval
 ![](https://drive.google.com/uc?export=view&id=1OK6Cfd2IWx1-EnlK-QJ6xcIUoV6pxd2l)
 
 
 -   Tukey Results
 
--   Compute the mean difference of each pair and report the Tukey statistic. If `True` , it means there is enough evidence that the mean is different between these two groups
+	-   Compute the mean difference of each pair and report the Tukey statistic. If `True` , it means there is enough evidence that the mean is different between these two groups
 
 ![](https://drive.google.com/uc?export=view&id=1W0E9StVghhwYSPSHWU0T5NI7UMQogf6v)
 
@@ -283,25 +282,25 @@ The output has four tabs:
 
 -   Summary statistics:
 
--   Provides a simple summary statistics, sorted by mean
+	-   Provides a simple summary statistics, sorted by mean
 
 ![](https://drive.google.com/uc?export=view&id=10O2h6VNIPKR83gEFU1zC71HgcLmgk77E)
 
 -   Tukey Results:
 
--   Show the Tukey statistic pairwise matrix
+	-   Show the Tukey statistic pairwise matrix
 
 ![](https://drive.google.com/uc?export=view&id=1HeFj5PLMcbD7KaO2mGry5tqbK-w7x7zW)
 
 -   Heatmap
 
--   Complement the Tukey results by showing the mean difference by groups. Do not pay attention to the color of the cells, there are under construction.
+	-   Complement the Tukey results by showing the mean difference by groups. Do not pay attention to the color of the cells, there are under construction.
 
 ![](https://drive.google.com/uc?export=view&id=1nqUtCiqY81F4uXAes3mizy9tKXM3ksGU)
 
 -   True only
 
--   Extract only the `True` pairwise difference
+	-   Extract only the `True` pairwise difference
 
 ![](https://drive.google.com/uc?export=view&id=1t-tkYnpdgtoJHcrWpbjg9V9hLtZIIFG7)
 
@@ -337,8 +336,8 @@ The output has 4 tabs:
 
 -   rank
 
--   Plots the rank of the high dimensional group for each subgroup of the low dimensional variable. The rank is computed based on the mean. The slicer can be used to visualize different groups
--   The bottom values are those who have the largest mean, hence have a ranking close to 0.
+	-   Plots the rank of the high dimensional group for each subgroup of the low dimensional variable. The rank is computed based on the mean. The slicer can be used to visualize different groups
+	-   The bottom values are those who have the largest mean, hence have a ranking close to 0.
 
 ![](https://drive.google.com/uc?export=view&id=1mJ8z7uP0RFc_J70by9UzE9M1y9auYSFw)
 
@@ -354,13 +353,13 @@ If the number of category in the low dimension variable is not too considerable,
 
 -   Summary Statistic
 
--   Provides the mean/average/median/sum and percentage for each high/low categories
+	-   Provides the mean/average/median/sum and percentage for each high/low categories
 
 ![](https://drive.google.com/uc?export=view&id=1rCtvCcGOexkU3Mx97VQTVI97DZuakFqn)
 
 -   Difference plot
 
--   Plot the sum/mean/median difference of the continuous variables by high dimension and low dimension if the number of group in the low dimension is equal to two
+	-   Plot the sum/mean/median difference of the continuous variables by high dimension and low dimension if the number of group in the low dimension is equal to two
 
 ![](https://drive.google.com/uc?export=view&id=1PnkB96ioFfyxCw7yVdjimz08FfMJOMrT)
 
@@ -418,19 +417,19 @@ The output has three tabs:
 
 -   Scatter plot, aggregated:
 
--   Plot the aggregated using the personalized aggregation method
+	-   Plot the aggregated using the personalized aggregation method
 
 ![](https://drive.google.com/uc?export=view&id=1BpoUpDC9cqOOZFVa3GiHUgFn24UlCibq)
 
 -   Plot scatter:
 
--   Plot the raw coordinates of X and Y, for each subgroup
+	-   Plot the raw coordinates of X and Y, for each subgroup
 
 ![](https://drive.google.com/uc?export=view&id=1Xr-tXp3iOU5H0DWrFTi4CeSMnz3u8LKY)
 
 -   Linear regression
 
--   Compute the linear relationship between X and Y, for each subgroup **separately**
+	-   Compute the linear relationship between X and Y, for each subgroup **separately**
 
 ![](https://drive.google.com/uc?export=view&id=1SRDJOP4aPldqnODVWhFr1cfXM3QFmW5x)
 
@@ -454,20 +453,20 @@ The output has three tabs:
 
 -   Scatter plot, filter
 
--   Aggregate X and Y variables with the selected group and color the data using the group from `var_col`.
+	-   Aggregate X and Y variables with the selected group and color the data using the group from `var_col`.
 
 ![](https://drive.google.com/uc?export=view&id=1_sC4-GnR1rb6dmZfFzvXH_40OT7SHkxx)
 
 -   Scatter plot
 
--   Plot the linear relationship between X and Y, using the mean/median and sum for aggregation
+	-   Plot the linear relationship between X and Y, using the mean/median and sum for aggregation
 
 ![](https://drive.google.com/uc?export=view&id=1ZY9fDkFA3oTzjvdUswbre7tCu3_OhqVv)
 
 -   Scatter plot, color
 
--   it replicates the first tab, not only aggregate by sum, but also by mean and median
--   This tab is primarily useful to save the images in the cloud.
+	-   it replicates the first tab, not only aggregate by sum, but also by mean and median
+	-   This tab is primarily useful to save the images in the cloud.
 
 ![](https://drive.google.com/uc?export=view&id=1CWMXMjImyLBSuKxRCFJxetBoSHNukjch)
 
@@ -489,42 +488,42 @@ The output has a large number of tabs to provide the maximum information:
 
 -   table_count
 
--   the first table gives the raw count of observations between the rows and the columns
--   In our example, the rows are the industries and the columns are the provinces. The matrix is quite large since there are 29 provinces and 39 industries
--   It is difficult to interpret, so we need to look at the other tabs
+	-   the first table gives the raw count of observations between the rows and the columns
+	-   In our example, the rows are the industries and the columns are the provinces. The matrix is quite large since there are 29 provinces and 39 industries
+	-   It is difficult to interpret, so we need to look at the other tabs
 
 ![](https://drive.google.com/uc?export=view&id=1Dq1kDweswl271gH_1I5f8c0KFhSFz9GL)
 
 -   table_row_proportion
 
--   the row proportion table counts the percentage of observations for a given row
--   The darker color indicates a higher proportion
+	-   the row proportion table counts the percentage of observations for a given row
+	-   The darker color indicates a higher proportion
 
 ![](https://drive.google.com/uc?export=view&id=1JRZF5SnPDaWTo_ZEPhhrs-sT6xsCEY6R)
 
 -   table_proportion_col
 
--   The column proportion table is similar in spirit than the row proportion but compute the percentage by column
+	-   The column proportion table is similar in spirit than the row proportion but compute the percentage by column
 
 ![](https://drive.google.com/uc?export=view&id=1zrdX7gOAxG45Ntn8rj4-NRl5V9Ujpg-K)
 
 -   pearson_resid
 
--   The Pearson residual table looks at the association between the rows and columns. It tells which row, for a given column, has a larger proportion than expected
--   The darker values highlight cells with a positive association between the corresponding row and column variables.
--   The lighter values highlight a negative association between the corresponding row and column variables.
+	-   The Pearson residual table looks at the association between the rows and columns. It tells which row, for a given column, has a larger proportion than expected
+	-   The darker values highlight cells with a positive association between the corresponding row and column variables.
+	-   The lighter values highlight a negative association between the corresponding row and column variables.
 
 ![](https://drive.google.com/uc?export=view&id=187aBRITkEWgdI-kbMRSraneRonKOYeD2)
 
 -   contribution
 
--   The contribution table shows the contribution in % of a given cell to the total Chi-square score is calculated square of the residual divided by the Chi statistics
+	-   The contribution table shows the contribution in % of a given cell to the total Chi-square score is calculated square of the residual divided by the Chi statistics
 
 ![](https://drive.google.com/uc?export=view&id=1TVSpEoOLutSNvPz3fvbu4iS0GWCkYUC4)
 
 -   result_test
 
--   The last tab shows the results of the Chi-square test
+	-   The last tab shows the results of the Chi-square test
 
 ![](https://drive.google.com/uc?export=view&id=1yZslLVzwkMg8qRvtpWtqXxQP8WI-o5Mh)
 
@@ -604,7 +603,7 @@ By analogy, the industry of non-mineral products looks to be evenly spread acros
 
 A top-down perspective gives us information about the number of group 2 (ie industry) for a given group 1 (ie. city). Values with more red indicate that this particular city has many industries for many years.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3MzkyODY1NTgsLTM1OTYwMzQ3MSwyND
-E1MzM5NzYsLTM4NTIxMDE3NCw5MjMxMzI3MDIsMzY2MjA5ODNd
-fQ==
+eyJoaXN0b3J5IjpbLTE1NDUzMjg3NjEsLTE3MzkyODY1NTgsLT
+M1OTYwMzQ3MSwyNDE1MzM5NzYsLTM4NTIxMDE3NCw5MjMxMzI3
+MDIsMzY2MjA5ODNdfQ==
 -->
