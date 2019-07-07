@@ -10,7 +10,7 @@ required_package = ['numpy', 'pandas', 'seaborn', 'matplotlib',
 
 setuptools.setup(
      name='DataAnalysis',
-     version='0.3',
+     version='0.4',
      #scripts=['data_analysis_econometrics'] ,
      author="Thomas Pernet",
      author_email="t.pernetcoudrier@gmail.com",
