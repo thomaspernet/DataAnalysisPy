@@ -177,9 +177,9 @@ The report provides detailed statistics for each variable.
 
   
 
-![](https://drive.google.com/uc?export=view&id=1d47XIIySjjCoQeZFUQ3uGcqYiWHcOCvY](https://drive.google.com/uc?export=view&id=1d47XIIySjjCoQeZFUQ3uGcqYiWHcOCvY)
+![](https://drive.google.com/uc?export=view&id=1d47XIIySjjCoQeZFUQ3uGcqYiWHcOCvY)
 
-![](https://drive.google.com/uc?export=view&id=1eqY1fmacCfo5m5okH_OKNdvdymSTrKXM](https://drive.google.com/uc?export=view&id=1eqY1fmacCfo5m5okH_OKNdvdymSTrKXM)
+![](https://drive.google.com/uc?export=view&id=1eqY1fmacCfo5m5okH_OKNdvdymSTrKXM)
 
   
 
@@ -603,7 +603,7 @@ By analogy, the industry of non-mineral products looks to be evenly spread acros
 
 A top-down perspective gives us information about the number of group 2 (ie industry) for a given group 1 (ie. city). Values with more red indicate that this particular city has many industries for many years.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NDUzMjg3NjEsLTE3MzkyODY1NTgsLT
-M1OTYwMzQ3MSwyNDE1MzM5NzYsLTM4NTIxMDE3NCw5MjMxMzI3
-MDIsMzY2MjA5ODNdfQ==
+eyJoaXN0b3J5IjpbMTA5NjczNDE3OCwtMTU0NTMyODc2MSwtMT
+czOTI4NjU1OCwtMzU5NjAzNDcxLDI0MTUzMzk3NiwtMzg1MjEw
+MTc0LDkyMzEzMjcwMiwzNjYyMDk4M119
 -->
