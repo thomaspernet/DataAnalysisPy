@@ -29,9 +29,6 @@ from scipy.stats import chi2
 from itertools import product
 from itertools import chain
 
-
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['font.serif'] = ['SimHei']
 init_notebook_mode(connected=True)
 alphabet = ['A', 'B', 'C', 'D','E','F','G','H','I','J','K','L','M','N',
 'O','P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y','Z', 'AA', 'AB',
