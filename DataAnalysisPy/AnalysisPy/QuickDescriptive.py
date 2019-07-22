@@ -2650,19 +2650,13 @@ def select_scatter_eventHandler(df,
 		value='-',
 		description='Variable:')
 
-	x_widget_g = widgets.Dropdown(
-			options=create_all_keys(df,
-			 date = False,
-			  method=4),
-			value='-',
-			description='Variable:')
 
 	return interactive(scatterplot,
 					   {"manual": True, "auto_display": False},
 					   df=fixed(df),
 					   dic_multiple=fixed(dic_df),
 					   log=[False, 'Y', 'X', 'YX'],
-					   group = x_widget_g,
+					   group = [False],
 					   sample=fixed(False),
 					   variables=x_widget,
 					   folder = '',
