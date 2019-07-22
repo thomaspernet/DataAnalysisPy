@@ -2472,7 +2472,6 @@ def scatterplot(df,
 				dic_multiple,
 				variables=False,
 				log=False,
-				group = False,
 				move_to_drive=False,
 				move_to_drive_batch = False,
 				folder=False,
@@ -2607,7 +2606,8 @@ def scatterplot(df,
 					  x=df_scat[var_x],
 					  y=df_scat[var_y],
 					  mode='markers',
-					  marker = dict(color='rgb(255, 127, 14)')
+					  marker = dict(color='rgb(255, 127, 14)',
+					  colorscale='Viridis',)
 					  )
 				)
 
@@ -2656,7 +2656,6 @@ def select_scatter_eventHandler(df,
 					   df=fixed(df),
 					   dic_multiple=fixed(dic_df),
 					   log=[False, 'Y', 'X', 'YX'],
-					   group = [False],
 					   sample=fixed(False),
 					   variables=x_widget,
 					   folder = '',
