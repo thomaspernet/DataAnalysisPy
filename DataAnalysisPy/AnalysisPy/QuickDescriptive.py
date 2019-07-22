@@ -4263,7 +4263,7 @@ dic_scatterg2 = False, dic_cat = False):
 	it returns a tab widgets
 	"""
 	wid_quick.clear_output()
-	wid_gridshow.clear_output()
+	#wid_gridshow.clear_output()
 	wid_ts.clear_output()
 	wid_cont.clear_output()
 	wid_high.clear_output()
