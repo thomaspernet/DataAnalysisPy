@@ -2598,6 +2598,7 @@ def scatterplot(df,
 				df_scat[var_x],
 				df_scat[var_y])
 			line = slope * df_scat[var_x] + intercept
+
 			fig = go.Figure()
 			fig.layout.template = 'plotly_dark'
 
@@ -2605,8 +2606,7 @@ def scatterplot(df,
 					  x=df_scat[var_x],
 					  y=df_scat[var_y],
 					  mode='markers',
-					  marker = dict(color='rgb(255, 127, 14)'),
-					  name= name_graph_save
+					  marker = dict(color='rgb(255, 127, 14)')
 					  )
 				)
 
@@ -2649,11 +2649,19 @@ def select_scatter_eventHandler(df,
 		value='-',
 		description='Variable:')
 
+	x_widget_g = widgets.Dropdown(
+			options=create_all_keys(df,
+			 date = False,
+			  method=4),
+			value='-',
+			description='Variable:')
+
 	return interactive(scatterplot,
 					   {"manual": True, "auto_display": False},
 					   df=fixed(df),
 					   dic_multiple=fixed(dic_df),
 					   log=[False, 'Y', 'X', 'YX'],
+					   group = x_widget_g,
 					   sample=fixed(False),
 					   variables=x_widget,
 					   folder = '',
