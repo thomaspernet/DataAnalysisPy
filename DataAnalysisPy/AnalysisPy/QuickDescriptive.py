@@ -2586,13 +2586,48 @@ def scatterplot(df,
 				name_graph_save = "Scatterplot with line of best fit of " + \
 					name_y + ' and ' + name_x + ' in log of ' + log
 
-			iplot(df_scat.iplot(kind='scatter',
-								asFigure=True,
-								x=var_x, y=var_y,
-								mode='markers',
-								xTitle=name_x, yTitle=name_y,
-								title=name_graph_save
-								))
+			#iplot(df_scat.iplot(kind='scatter',
+			#					asFigure=True,
+			#					x=var_x, y=var_y,
+			#					mode='markers',
+			#					xTitle=name_x, yTitle=name_y,
+			#					title=name_graph_save
+			#					))
+
+			slope, intercept, r_value, p_value, std_err = stats.linregress(
+				var_x,
+				var_y)
+			line = slope * var_x + intercept
+			fig = go.Figure(layout=layout)
+			fig.layout.template = 'plotly_dark'
+
+			fig.add_trace(go.Scattergl(
+					  x=var_x,
+					  y=var_y,
+					  mode='markers',
+					  marker = dict(color='rgb(255, 127, 14)'),
+					  name= name_graph_save
+					  )
+				)
+
+			fig.update_layout(
+    			title=go.layout.Title(
+        			text="name_graph_save,
+        			x=0
+    			),
+    			xaxis=go.layout.XAxis(
+        			title=go.layout.xaxis.Title(
+            		text=name_x,
+        		)
+    			),
+    			yaxis=go.layout.YAxis(
+        		title=go.layout.yaxis.Title(
+            	text=name_y,
+        			)
+    			)
+			)
+
+			iplot(fig)
 
 def list_dropdownScatter(dic_df):
 	"""
