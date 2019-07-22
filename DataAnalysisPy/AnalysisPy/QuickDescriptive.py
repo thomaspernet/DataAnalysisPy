@@ -2411,21 +2411,21 @@ def computation_scatterplot(df,
 		try:
 			df_1[var_y] = np.log(df_1[var_y])
 		except:
-			df_1 = df_1[df_1[var_y] != 0]
+			df_1 = np.log(df_1[df_1[var_y] != 0])
 	elif log == 'X':
 		df_1 = df_var.copy()
 		try:
 			df_1[var_x] = np.log(df_1[var_x])
 		except:
-			df_1 = df_1[df_1[var_x] != 0]
+			df_1 = np.log(df_1[df_1[var_x] != 0])
 	elif log == 'YX':
 		df_1 = df_var.copy()
 		try:
 			df_1[var_y] = np.log(df_1[var_y])
 			df_1[var_x] = np.log(df_1[var_x])
 		except:
-			df_1 = df_1[df_1[var_y] != 0]
-			df_1 = df_1[df_1[var_x] != 0]
+			df_1 = np.log(df_1[df_1[var_y] != 0])
+			df_1 = np.log(df_1[df_1[var_x] != 0])
 	else:
 		df_1 = df_var.copy()
 
@@ -2595,20 +2595,29 @@ def scatterplot(df,
 			#					))
 
 			slope, intercept, r_value, p_value, std_err = stats.linregress(
-				var_x,
-				var_y)
-			line = slope * var_x + intercept
+				df_scat[var_x],
+				df_scat[var_y])
+			line = slope * df_scat[var_x] + intercept
 			fig = go.Figure(layout=layout)
 			fig.layout.template = 'plotly_dark'
 
 			fig.add_trace(go.Scattergl(
-					  x=var_x,
-					  y=var_y,
+					  x=df_scat[var_x],
+					  y=df_scat[var_y],
 					  mode='markers',
 					  marker = dict(color='rgb(255, 127, 14)'),
 					  name= name_graph_save
 					  )
 				)
+
+			fig.add_trace(go.Scattergl(
+						  x=df_scat[var_x],
+						  y=line,
+						  mode='lines',
+						  marker=dict(color='rgb(31, 119, 180)'),
+						  name='Fit'
+						  )
+						 )
 
 			fig.update_layout(
     			title=go.layout.Title(
