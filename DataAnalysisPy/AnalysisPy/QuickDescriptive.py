@@ -2619,6 +2619,9 @@ def scatterplot(df,
 						  )
 						 )
 
+			fig['layout'].update(title=name_x, showgrid=False)
+			fig['layout'].update(title=name_y, showgrid=False)
+
 			iplot(fig)
 
 def list_dropdownScatter(dic_df):
