@@ -2598,7 +2598,7 @@ def scatterplot(df,
 				df_scat[var_x],
 				df_scat[var_y])
 			line = slope * df_scat[var_x] + intercept
-			fig = go.Figure(layout=layout)
+			fig = go.Figure()
 			fig.layout.template = 'plotly_dark'
 
 			fig.add_trace(go.Scattergl(
