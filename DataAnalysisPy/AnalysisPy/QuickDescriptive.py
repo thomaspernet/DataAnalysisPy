@@ -380,7 +380,7 @@ def list_dropdownTS(dic_df):
 
 	return l_choice
 
-def computation_ts(df, dic_df, index_var, group=False):
+def computation_ts(df, dic_df, index_var, group=False, log = False):
 
 	"""
 	Core function for the tab Time Series.
@@ -456,8 +456,14 @@ def computation_ts(df, dic_df, index_var, group=False):
 		# print(drop_categorical)
 		df_var = df_var.loc[~df_var.isin(drop_categorical).any(1)]
 
+	if log:
+		df_1 = df_var.copy()
+		df_1[var_continuous] = np.log(df_1[var_continuous])
+	else:
+		df_1 = df_var.copy()
+
 	#### 4 Compute mean/median/sum by date
-	y = df_var.groupby(var_date).agg({
+	y = df_1.groupby(var_date).agg({
 		var_continuous: ['mean',
 						 'median',
 						 'sum']})
@@ -575,6 +581,7 @@ def time_series_gs(df,
 				   dic_multiple,
 				   variable=False,
 				   group=False,
+				   log=False,
 				   sheetID=False,
 				   sheetName=False,
 				   folder=False,
@@ -625,7 +632,8 @@ def time_series_gs(df,
 			# COmpute data
 			temp_comp = computation_ts(df=df, dic_df=dic_multiple,
 									   index_var=index_dic_g2,
-									   group=group)
+									   group=group,
+									   log = log)
 
 	   #### Extract the output from the computation
 			y = temp_comp['output'][0]
@@ -671,7 +679,8 @@ def time_series_gs(df,
 
 		temp_comp = computation_ts(df=df, dic_df=dic_multiple,
 								   index_var=index_dic_g2,
-								   group=group)
+								   group=group,
+								   log =log)
 
 		y = temp_comp['output'][0]
 		df_var = temp_comp['output'][1]
@@ -797,6 +806,7 @@ def select_TS_eventHandler(df, dic_df, cdr = False):
 					   dic_multiple=fixed(dic_df),
 					   variable = x_widget,
 					   group = l_filter,
+					   log = False,
 					   sheetID='',
 					   sheetName='',
 					   folder='',
