@@ -14,6 +14,14 @@ import plotly.offline as py
 import plotly.graph_objs as go
 from plotly import tools
 
+
+from pivottablejs import pivot_ui
+
+#### need to activate
+### jupyter nbextension enable --py --sys-prefix widgetsnbextension
+### jupyter nbextension enable --py --sys-prefix qgrid
+import qgrid
+
 import cufflinks as cf
 import time
 import researchpy as rp
@@ -359,6 +367,41 @@ def make_quickstart(df, cdr = False):
 					   move_to_drive=False,
 					   cdr = fixed(cdr)
 					   )
+
+
+#############################################################################
+#############################################################################
+#############################################################################
+##################### Grid search ##############
+
+def grid_search(df):
+	"""
+	"""
+
+	return qgrid.show_grid(df,
+                grid_options = {
+    # SlickGrid options
+    'fullWidthRows': False,
+    'syncColumnCellResize': False,
+    'forceFitColumns': False,
+    'defaultColumnWidth': 150,
+    'rowHeight': 28,
+    'enableColumnReorder': False,
+    'enableTextSelectionOnCells': True,
+    'editable': True,
+    'autoEdit': False,
+    'explicitInitialization': True,
+
+    # Qgrid options
+    'maxVisibleRows': 15,
+    'minVisibleRows': 8,
+    'sortable': True,
+    'filterable': True,
+    'highlightSelectedCell': False,
+    'highlightSelectedRow': True
+}
+               )
+
 
 #############################################################################
 #############################################################################
@@ -4197,6 +4240,9 @@ def select_fe_eventHandler(df):
 
 ######## Define outputs Elements
 wid_quick = widgets.Output()
+#### two new tab
+wid_gridshow = widgets.Output()
+
 wid_ts = widgets.Output()
 wid_cont = widgets.Output()
 wid_high = widgets.Output()
@@ -4217,6 +4263,7 @@ dic_scatterg2 = False, dic_cat = False):
 	it returns a tab widgets
 	"""
 	wid_quick.clear_output()
+	wid_gridshow.clear_output()
 	wid_ts.clear_output()
 	wid_cont.clear_output()
 	wid_high.clear_output()
@@ -4238,6 +4285,9 @@ dic_scatterg2 = False, dic_cat = False):
 
 	with wid_quick:
 		display(make_quickstart(df = dataframe, cdr = cdr))
+
+	with wid_gridshow:
+    	display(grid_search(df=dataframe))
 
 	with wid_ts:
 		display(select_TS_eventHandler(df = dataframe,
@@ -4276,10 +4326,11 @@ dic_scatterg2 = False, dic_cat = False):
 	with wid_fe:
 		display(select_fe_eventHandler(df = dataframe))
 
-	tab = widgets.Tab([wid_quick, wid_ts, wid_cont, wid_high, wid_highLow,
-	wid_scatter, wid_scatter1, wid_scatter2, wid_cat, wid_fe])
+	tab = widgets.Tab([wid_quick,wid_gridshow,  wid_ts, wid_cont, wid_high,
+	 wid_highLow, wid_scatter, wid_scatter1, wid_scatter2, wid_cat, wid_fe])
 
 	tab.set_title(0, 'Quick description')
+	tab.set_title(0, 'Filter dataset')
 	tab.set_title(1, 'Time Serie plots')
 	tab.set_title(2, 'Low dimensional group')
 	tab.set_title(3, 'High dimensional group')
