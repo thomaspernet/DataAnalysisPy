@@ -381,14 +381,14 @@ def grid_search(df):
 	return qgrid.show_grid(df,
 				grid_options = {
 	# SlickGrid options
-	'fullWidthRows': False,
-	'syncColumnCellResize': False,
+	'fullWidthRows': True,
+	'syncColumnCellResize': True,
 	'forceFitColumns': False,
 	'defaultColumnWidth': 150,
 	'rowHeight': 28,
-	'enableColumnReorder': False,
+	'enableColumnReorder': True,
 	'enableTextSelectionOnCells': True,
-	'editable': True,
+	'editable': False,
 	'autoEdit': False,
 	'explicitInitialization': True,
 
@@ -397,7 +397,7 @@ def grid_search(df):
 	'minVisibleRows': 8,
 	'sortable': True,
 	'filterable': True,
-	'highlightSelectedCell': False,
+	'highlightSelectedCell': True,
 	'highlightSelectedRow': True
 }
 			   )
