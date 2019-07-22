@@ -480,7 +480,7 @@ def computation_ts(df, dic_df, index_var, group=False, log = False):
 					  value_name=name_continuous)
 
 	dic_int = {
-		'output': [y, df_var, var_date, var_continuous, name_continuous,
+		'output': [y, df_1, var_date, var_continuous, name_continuous,
 		 name_date, df_melt]
 	}
 
