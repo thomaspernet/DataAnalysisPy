@@ -2619,23 +2619,6 @@ def scatterplot(df,
 						  )
 						 )
 
-			fig.update_layout(
-    			title=go.layout.Title(
-        			text=name_graph_save,
-        			x=0
-    			),
-    			xaxis=go.layout.XAxis(
-        			title=go.layout.xaxis.Title(
-            		text=name_x,
-        		)
-    			),
-    			yaxis=go.layout.YAxis(
-        		title=go.layout.yaxis.Title(
-            	text=name_y,
-        			)
-    			)
-			)
-
 			iplot(fig)
 
 def list_dropdownScatter(dic_df):
