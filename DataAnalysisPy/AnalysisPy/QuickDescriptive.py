@@ -402,6 +402,15 @@ def grid_search(df):
                     }
                     )
 
+#############################################################################
+#############################################################################
+#############################################################################
+##################### Pivot table ##############
+def pivot_table(df):
+    """
+
+    """
+    return pivot_ui(df)
 
 #############################################################################
 #############################################################################
@@ -4242,6 +4251,7 @@ def select_fe_eventHandler(df):
 wid_quick = widgets.Output()
 #### two new tab
 wid_gridshow = widgets.Output()
+wid_pivottable = widgets.Output()
 
 wid_ts = widgets.Output()
 wid_cont = widgets.Output()
@@ -4264,6 +4274,7 @@ dic_scatterg2 = False, dic_cat = False):
 	"""
 	wid_quick.clear_output()
 	wid_gridshow.clear_output()
+	wid_pivottable.clear_output()
 	wid_ts.clear_output()
 	wid_cont.clear_output()
 	wid_high.clear_output()
@@ -4288,6 +4299,9 @@ dic_scatterg2 = False, dic_cat = False):
 
 	with wid_gridshow:
 		display(grid_search(df=dataframe))
+
+	with wid_pivottable:
+		display(pivot_table(df=dataframe))
 
 	with wid_ts:
 		display(select_TS_eventHandler(df = dataframe,
@@ -4326,19 +4340,21 @@ dic_scatterg2 = False, dic_cat = False):
 	with wid_fe:
 		display(select_fe_eventHandler(df = dataframe))
 
-	tab = widgets.Tab([wid_gridshow, wid_quick,  wid_ts, wid_cont, wid_high,
+	tab = widgets.Tab([wid_gridshow, wid_quick, wid_pivottable,
+	  wid_ts, wid_cont, wid_high,
 	 wid_highLow, wid_scatter, wid_scatter1, wid_scatter2, wid_cat, wid_fe])
 
 	tab.set_title(0, 'Filter dataset')
 	tab.set_title(1, 'Quick description')
-	tab.set_title(2, 'Time Serie plots')
-	tab.set_title(3, 'Low dimensional group')
-	tab.set_title(4, 'High dimensional group')
-	tab.set_title(5, 'High/Low dimensional group')
-	tab.set_title(6, 'Scatter plot')
-	tab.set_title(7, 'Scatter plot, group 1')
-	tab.set_title(8, 'Scatter plot, group 2')
-	tab.set_title(9, 'Categorical analysis')
-	tab.set_title(10, 'Fixed effect')
+	tab.set_title(2, 'Pivot table')
+	tab.set_title(3, 'Time Serie plots')
+	tab.set_title(4, 'Low dimensional group')
+	tab.set_title(5, 'High dimensional group')
+	tab.set_title(6, 'High/Low dimensional group')
+	tab.set_title(7, 'Scatter plot')
+	tab.set_title(8, 'Scatter plot, group 1')
+	tab.set_title(9, 'Scatter plot, group 2')
+	tab.set_title(10, 'Categorical analysis')
+	tab.set_title(11, 'Fixed effect')
 
 	display(tab)
