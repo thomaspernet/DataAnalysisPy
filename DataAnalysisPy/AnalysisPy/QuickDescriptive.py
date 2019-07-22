@@ -2619,8 +2619,8 @@ def scatterplot(df,
 						  )
 						 )
 
-			fig['layout'].update(title=name_x, showgrid=False)
-			fig['layout'].update(title=name_y, showgrid=False)
+			fig['layout'].update(title=name_x)
+			fig['layout'].update(title=name_y)
 
 			iplot(fig)
 
