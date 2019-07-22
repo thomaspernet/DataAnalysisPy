@@ -2612,7 +2612,7 @@ def scatterplot(df,
 
 			fig.update_layout(
     			title=go.layout.Title(
-        			text="name_graph_save,
+        			text=name_graph_save,
         			x=0
     			),
     			xaxis=go.layout.XAxis(
