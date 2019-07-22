@@ -4263,7 +4263,7 @@ dic_scatterg2 = False, dic_cat = False):
 	it returns a tab widgets
 	"""
 	wid_quick.clear_output()
-	#wid_gridshow.clear_output()
+	wid_gridshow.clear_output()
 	wid_ts.clear_output()
 	wid_cont.clear_output()
 	wid_high.clear_output()
@@ -4326,7 +4326,7 @@ dic_scatterg2 = False, dic_cat = False):
 	with wid_fe:
 		display(select_fe_eventHandler(df = dataframe))
 
-	tab = widgets.Tab([wid_quick,wid_gridshow,  wid_ts, wid_cont, wid_high,
+	tab = widgets.Tab([wid_quick, wid_gridshow,  wid_ts, wid_cont, wid_high,
 	 wid_highLow, wid_scatter, wid_scatter1, wid_scatter2, wid_cat, wid_fe])
 
 	tab.set_title(0, 'Quick description')
