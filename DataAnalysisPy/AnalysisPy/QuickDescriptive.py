@@ -379,28 +379,28 @@ def grid_search(df):
 	"""
 
 	return qgrid.show_grid(df,
-                grid_options = {
-    # SlickGrid options
-    'fullWidthRows': False,
-    'syncColumnCellResize': False,
-    'forceFitColumns': False,
-    'defaultColumnWidth': 150,
-    'rowHeight': 28,
-    'enableColumnReorder': False,
-    'enableTextSelectionOnCells': True,
-    'editable': True,
-    'autoEdit': False,
-    'explicitInitialization': True,
+				grid_options = {
+	# SlickGrid options
+	'fullWidthRows': False,
+	'syncColumnCellResize': False,
+	'forceFitColumns': False,
+	'defaultColumnWidth': 150,
+	'rowHeight': 28,
+	'enableColumnReorder': False,
+	'enableTextSelectionOnCells': True,
+	'editable': True,
+	'autoEdit': False,
+	'explicitInitialization': True,
 
-    # Qgrid options
-    'maxVisibleRows': 15,
-    'minVisibleRows': 8,
-    'sortable': True,
-    'filterable': True,
-    'highlightSelectedCell': False,
-    'highlightSelectedRow': True
+	# Qgrid options
+	'maxVisibleRows': 15,
+	'minVisibleRows': 8,
+	'sortable': True,
+	'filterable': True,
+	'highlightSelectedCell': False,
+	'highlightSelectedRow': True
 }
-               )
+			   )
 
 
 #############################################################################
@@ -4287,7 +4287,7 @@ dic_scatterg2 = False, dic_cat = False):
 		display(make_quickstart(df = dataframe, cdr = cdr))
 
 	with wid_gridshow:
-    	display(grid_search(df=dataframe))
+		display(grid_search(df=dataframe))
 
 	with wid_ts:
 		display(select_TS_eventHandler(df = dataframe,
