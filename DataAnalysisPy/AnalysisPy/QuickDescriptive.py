@@ -374,7 +374,7 @@ def make_quickstart(df, cdr = False):
 #############################################################################
 ##################### Grid search ##############
 
-def grid_search(df):
+def grid_search(df, rows_to_display = 10):
 	"""
 	"""
 
@@ -393,8 +393,8 @@ def grid_search(df):
                         'explicitInitialization': True,
 
                         # Qgrid options
-                        'maxVisibleRows': 10,
-                        'minVisibleRows': 8,
+                        'maxVisibleRows': rows_to_display,
+                        'minVisibleRows': 5,
                         'sortable': True,
                         'filterable': True,
                         'highlightSelectedCell': False,
