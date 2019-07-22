@@ -393,7 +393,7 @@ def grid_search(df):
 	'explicitInitialization': True,
 
 	# Qgrid options
-	'maxVisibleRows': 15,
+	'maxVisibleRows': 10,
 	'minVisibleRows': 8,
 	'sortable': True,
 	'filterable': True,
