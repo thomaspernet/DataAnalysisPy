@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 required_package = ['numpy', 'pandas', 'seaborn', 'matplotlib',
-'scipy', 'plotly', 'researchpy', 'statsmodels', 'squarify',
+'scipy', 'plotly==3.10.0', 'researchpy', 'statsmodels', 'squarify',
 'pandas_profiling', 'cufflinks', 'lxml', 'pivottablejs', 'qgrid']
 
 

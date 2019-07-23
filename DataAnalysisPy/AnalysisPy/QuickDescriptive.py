@@ -22,7 +22,7 @@ from pivottablejs import pivot_ui
 ### jupyter nbextension enable --py --sys-prefix qgrid
 import qgrid
 
-#import cufflinks as cf
+import cufflinks as cf
 import time
 import researchpy as rp
 import scipy.stats as stats
@@ -761,8 +761,8 @@ def time_series_gs(df,
 			df_melt = df_melt)
 
 		##### Define theme of plotly
-		#cf.go_offline()
-		#cf.set_config_file(offline=False, world_readable=False, theme='space')
+		cf.go_offline()
+		cf.set_config_file(offline=False, world_readable=False, theme='space')
 
 		summary_plot = widgets.Output()
 
@@ -1247,8 +1247,8 @@ def summary_continuous_low_dimension(df,
 				l_resut=l_resut
 			)
 
-		#cf.go_offline()
-		#cf.set_config_file(offline=False, world_readable=False, theme='space')
+		cf.go_offline()
+		cf.set_config_file(offline=False, world_readable=False, theme='space')
 
 		summary_ = widgets.Output()
 		summary_tukey = widgets.Output()
