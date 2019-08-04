@@ -1876,6 +1876,13 @@ def summary_continuous_high_dimension(df,
 
 				fig.show()
 
+				fig_1 = px.bar(sum_y_group,
+				  x= var_categorical,
+				  y = 'Mean',
+				  color = var_cat_color)
+
+				fig_1.show()
+
 
 				
 
