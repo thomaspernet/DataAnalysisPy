@@ -12,8 +12,9 @@ import re
 from plotly.offline import init_notebook_mode, iplot
 import plotly.offline as py
 import plotly.graph_objs as go
-from plotly import tools
-
+#from plotly import tools
+from plotly.subplots import make_subplots
+import plotly.express as px
 
 from pivottablejs import pivot_ui
 
@@ -22,7 +23,7 @@ from pivottablejs import pivot_ui
 ### jupyter nbextension enable --py --sys-prefix qgrid
 import qgrid
 
-import cufflinks as cf
+#import cufflinks as cf
 import time
 import researchpy as rp
 import scipy.stats as stats
@@ -761,8 +762,8 @@ def time_series_gs(df,
 			df_melt = df_melt)
 
 		##### Define theme of plotly
-		cf.go_offline()
-		cf.set_config_file(offline=False, world_readable=False, theme='space')
+		#cf.go_offline()
+		#cf.set_config_file(offline=False, world_readable=False, theme='space')
 
 		summary_plot = widgets.Output()
 
@@ -774,8 +775,8 @@ def time_series_gs(df,
 
 			df_group = df_var.groupby([var_date, group]).sum().reset_index()
 
-			df_group = df_group.pivot(index=var_date,
-									  columns=group, values=var_continuous)
+			#df_group = df_group.pivot(index=var_date,
+			#						  columns=group, values=var_continuous)
 
 			tab_contents = [summary_plot_group, summary_plot]
 			tab = widgets.Tab(tab_contents)
@@ -808,35 +809,96 @@ def time_series_gs(df,
 			# Need to fix the issue. Plotly cannot go inside tab
 
 			with summary_plot_group:
-				iplot(df_group.iplot(
-					asFigure=True,
-					kind='scatter',
-					xTitle=var_date,
-					yTitle=var_continuous,
-					title='Evolution of ' + name_continuous + ' by ' + group))
+				#df_group.iplot(
+				#	asFigure=True,
+				#	kind='scatter',
+				#	xTitle=var_date,
+				#	yTitle=var_continuous,
+				#	title='Evolution of ' + name_continuous + ' by ' + group)
+				#print(df_group)
+				fig = px.line(df_group,
+					x=var_date,
+					y=name_continuous,
+					color=group,
+					template="plotly_dark")
+				fig.update_traces(textposition='top center')
+				fig.update_layout(
+					height=800,
+					title_text= 'Evolution of ' + name_continuous + ' by ' + group)
+
+				fig.show()
 
 		else:
 			with summary_plot:
 				# plt.show(fig)
-				y = y.set_index(var_date)
-				df_plot_up = y[['sum']]
-				df_plot_middle = y[['diff']]
-				df_plot_down = y[['mean', 'median']]
+				#y = y.set_index(var_date)
+				#df_plot_up = y[['sum']]
+				#df_plot_middle = y[['diff']]
+				#df_plot_down = y[['mean', 'median']]
 
-				df_plot_up.iplot(subplots=False,
-								 yTitle=name_continuous,
-								 title='Evolution of ' + name_continuous)
+				fig_1 = px.line(y,
+					x=var_date,
+					y='sum',
+					template="plotly_dark")
+				fig_1.update_traces(textposition='top center')
+				fig_1.update_layout(
+					height=800,
+					title_text= 'Evolution of sum ' + name_continuous)
 
-				df_plot_up.iplot(subplots=False,
-								 kind='bar',
-								 yTitle=name_continuous,
-								 title=name_date + ' Difference of ' + name_continuous)
+
+				fig_2 = px.line(y,
+					x=var_date,
+					y='mean',
+					template="plotly_dark")
+				fig_2.update_traces(textposition='top center')
+				fig_2.update_layout(
+					height=800,
+					title_text= 'Evolution of mean ' + name_continuous)
+
+				fig_3 = px.line(y,
+					x=var_date,
+					y='median',
+					template="plotly_dark")
+				fig_3.update_traces(textposition='top center')
+				fig_3.update_layout(
+					height=800,
+					title_text= 'Evolution of median ' + name_continuous)
+
+				fig_4 = px.bar(y,
+					x=var_date,
+					y='diff',
+					template="plotly_dark")
+				fig_4.update_traces(textposition='auto')
+				fig_4.update_layout(
+					height=800,
+					title_text= name_date + ' Difference of ' + name_continuous)
+				#fig.update_traces(textposition='top center')
+				#fig.update_layout(
+				#	height=800,
+				#	title_text= 'Evolution of ' + name_continuous)
+
+				fig_1.show()
+				fig_2.show()
+				fig_3.show()
+				fig_4.show()
+
+
+
+
+				#df_plot_up.iplot(subplots=False,
+				#				 yTitle=name_continuous,
+				#				 title='Evolution of ' + name_continuous)
+
+				#df_plot_up.iplot(subplots=False,
+				#				 kind='bar',
+				#				 yTitle=name_continuous,
+				#				 title=name_date + ' Difference of ' + name_continuous)
 			# with summary_plot_mean_med:
 
-				df_plot_down.iplot(subplots=True,
-								   yTitle=name_continuous,
-								   title='Evolution of ' + name_continuous,
-								   shape=(2, 1))
+				#df_plot_down.iplot(subplots=True,
+				#				   yTitle=name_continuous,
+				#				   title='Evolution of ' + name_continuous,
+				#				   shape=(2, 1))
 
 def select_TS_eventHandler(df, dic_df, cdr = False):
 
@@ -1247,8 +1309,8 @@ def summary_continuous_low_dimension(df,
 				l_resut=l_resut
 			)
 
-		cf.go_offline()
-		cf.set_config_file(offline=False, world_readable=False, theme='space')
+		#cf.go_offline()
+		#cf.set_config_file(offline=False, world_readable=False, theme='space')
 
 		summary_ = widgets.Output()
 		summary_tukey = widgets.Output()
@@ -1296,12 +1358,30 @@ def summary_continuous_low_dimension(df,
 					col for col in df_density if col.startswith(dist)]
 				filter_col.append('x')
 				df_cdf = df_density[filter_col]
-				df_cdf = df_cdf.set_index('x')
+				df_cdf = df_cdf.set_index('x').stack().reset_index()
+				df_cdf.columns = ['x', 'group', 'value']
 
-				df_cdf.iplot(subplots=False,
-								yTitle=name_continuous,
-								 title= 'Density distribution of ' + name_continuous +
+				fig = px.line(df_cdf,
+					x='x',
+					y='value',
+					color='group',
+					template="plotly_dark")
+				fig.update_traces(textposition='top center')
+				fig.update_layout(
+					height=800,
+					title_text= 'Density distribution of ' + name_continuous +
 							' grouped by '+ name_categorical)
+
+				fig.show()
+
+				#df_cdf.iplot(subplots=False,
+				#				yTitle=name_continuous,
+				#				 title= 'Density distribution of ' + name_continuous +
+				#			' grouped by '+ name_categorical)
+				
+				#print(df_cdf)
+				
+
 
 			#   for y in filter_col[:-1]:
 			#        ax = sns.lineplot(x='x',
@@ -1730,17 +1810,19 @@ def summary_continuous_high_dimension(df,
 			)
 
 		summary_ = widgets.Output()
+		summary_bar_polar = widgets.Output()
 		summary_tukey = widgets.Output()
 		summary_heatmap = widgets.Output()
 		summary_true= widgets.Output()
 
-		tab_contents = [summary_, summary_tukey,
+		tab_contents = [summary_bar_polar, summary_, summary_tukey,
 		 summary_heatmap, summary_true]
 		tab = widgets.Tab(tab_contents)
-		tab.set_title(0, 'Summary Statistic')
-		tab.set_title(1, 'Tukey Results')
-		tab.set_title(2, 'Heatmap')
-		tab.set_title(3, 'True Only')
+		tab.set_title(0, 'Summary Bar polar')
+		tab.set_title(1, 'Summary Statistic')
+		tab.set_title(2, 'Tukey Results')
+		tab.set_title(3, 'Heatmap')
+		tab.set_title(4, 'True Only')
 
 		display(tab)
 
@@ -1781,6 +1863,22 @@ def summary_continuous_high_dimension(df,
 						)
 
 			display(temp)
+
+		with summary_bar_polar:
+			if var_cat_color != False:
+
+				fig = px.bar_polar(sum_y_group,
+				 r="Mean",
+				 theta=var_categorical,
+				 color=var_cat_color,
+				 template="plotly_dark",
+				 color_discrete_sequence= px.colors.sequential.Plasma[-2::-1])
+
+				fig.show()
+
+
+				
+
 		with summary_tukey:
 			# Color cell
 			# df_mc = df_mc.style.bar(subset=['meandiff'],
@@ -2331,7 +2429,7 @@ def slope_rank(df,
 							ascending = True)
 				data_x.append(aggregated_serie)
 
-			fig1 = tools.make_subplots(rows = 1, cols = len(unique_group),
+			fig1 = make_subplots(rows = 1, cols = len(unique_group),
 							 shared_xaxes=True, shared_yaxes=False)
 
 			for i, name in enumerate(unique_group):
@@ -3050,7 +3148,7 @@ def scatterplot_categorical(df,
 
 		summary_ = widgets.Output()
 		summary_plot = widgets.Output()
-		summary_plot_color = widgets.Output()
+		#summary_plot_color = widgets.Output()
 		summary_agg = widgets.Output()
 
 		tab_contents = [summary_agg,summary_plot, summary_]
@@ -4189,7 +4287,7 @@ def focus_fixed_effect(df, group1, group2):
 								   columns=[g1, g2])
 	list_df_combintation = []
 	z = []
-	fig = tools.make_subplots(rows=2, cols=1)
+	fig = make_subplots(rows=2, cols=1)
 	for i, name in enumerate(g1_df):
 		serie_x = df[df[g1]
 								 == name]
