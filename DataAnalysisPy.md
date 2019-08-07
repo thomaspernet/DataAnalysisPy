@@ -2,27 +2,28 @@
 
 # DataVizPy
 
+![https://drive.google.com/uc?export=view&id=1ILh8akBCp6eSW-PDlr2oSxAuiZl4MHUY](https://drive.google.com/uc?export=view&id=1ILh8akBCp6eSW-PDlr2oSxAuiZl4MHUY)
+
 DataAnalysisPy is a simple tool to help the Exploratory Data Analysis directly from Jupyter Notebook and Jupyter Lab. 🚀
 
-Data preparation is a tedious and time-consuming task. In most of the case, we need to connect our data to lots of data sources, create new variables and eliminate unwanted observations. During this crucial step of a data project, a good practice would be to check if all of the wranglings do not distort too much the data. For instance, when we are merging two datasets together, it's important to see if the shape or the distribution of the new data frame roughly looks the same as the original data.
-
+Data preparation is a tedious and time-consuming task. In most of the case, we need to connect our data to lots of data sources, create new variables, and eliminate unwanted observations. It is a crucial step in a data project. A good practice will be to check if all of the wranglings do not distort too much the data.
   
 
-Once the dataset is ready, we need to spend a tremendous time understanding and investigating the data. Ignoring this step cannot bring successful results. If our task is to use the dataset to make predictions, then we first need to discover the patterns that the algorithms will extrapolate and generalize.
+Once the dataset is ready, we need to spend a tremendous time understanding and investigating the data. Ignoring this step cannot bring fruitful results. If our task is to use the dataset to make predictions, then we first need to discover the patterns that the algorithms will extrapolate and generalize.
 
   
 
 ## Motivations
 
-This explanatory step requires lots of coding, to know the basic statistical tests and communicate the results easily. DataVizPy is a tool helping to understand the data both visually and statistically. DataVizPy can be imported in a single line of code, no extra coding required afterward. The different data visualization techniques are accessible via tabs and variables can be selected with a dropdown menu.
+The explanatory step requires lots of coding, to know the necessary statistical tests and communicate the results quickly. DataVizPy is a tool helping to understand the data both visually and statistically. DataVizPy can be imported in a single line of code, no extra coding required afterward. The different data visualization techniques are accessible via tabs, and variables can be selected with a dropdown menu.
 
   
 
-Another motivation behind DataVizPy is to the possibility to save and archive the results. A data project takes lots of time and in most case, we need to check back and forth the results found some time ago. It wouldn't make any sense to reload the data, re-run the analysis and again draw a conclusion. It is easier to save the results either in a spreadsheet or in PDF, directly to the cloud.
+Another motivation behind DataVizPy is to the possibility to save and archive the results. A data project takes lots of time, and in most case, we need to check back and forth the results found some time ago. It wouldn't make any sense to reload the data, re-run the analysis, and again draw a conclusion. It is easier to save the results either in a spreadsheet or in PDF, directly to the cloud.
 
   
 
-Another important perk to save results in a spreadsheet (or CSV) is the end-user of the data probably needs to communicate the results in a different way. It's often the case that the consumer of the data changes the type of graph, or use a custom template. It would be time-consuming to manually copy and paste the results of the computation and the data to make a figure or a statement. To overcome this potential issue, DataVizPy communicates with Google Drive to save the results in a Google Spreadsheet.
+Another essential perk to save results in a spreadsheet (or CSV) is the end-user of the data probably needs to communicate the results differently. It's often the case that the consumer of the data changes the type of graph, or use a custom template. It would be time-consuming to manually copy and paste the results of the computation and the data to make a figure or a statement. To overcome this potential issue, DataVizPy communicates with Google Drive to save the results in a Google Spreadsheet.
 
   
 
@@ -35,6 +36,7 @@ Last but not least, DataVizPy can be used to make batch computations on a set of
 -   Quick data analysis including the following tests:
 
 	-   Continuous variable analysis (Scatterplot)
+	-  PivotTable: Big Thund up for the create of this library! [PivotTable](https://github.com/nicolaskruchten/jupyter_pivottablejs?source=post_page---------------------------)
 	-   Categorical variable (Chi test, Correspondence Analysis)
 	-   Mixte between continuous and categorical variables (ANOVA)
 
@@ -48,7 +50,7 @@ Last but not least, DataVizPy can be used to make batch computations on a set of
 	-   quartile
 	-   exclude undesired values or groups
 
--   Filter the results (forthcoming)
+-   Filter the results (partial solution)
 -   Save the results in Google Drive or CSV (forthcoming)
 -   Batch computations
 
@@ -58,7 +60,7 @@ Last but not least, DataVizPy can be used to make batch computations on a set of
 
   
 
-Open a Jupyter notebook, or Jupyter lab, and install the library
+Open a Jupyter notebook, or Jupyter lab, and install the library.
 
   
 
@@ -69,51 +71,29 @@ Open a Jupyter notebook, or Jupyter lab, and install the library
 Then load your data. Make sure the data have the right format. For instance, if you want to treat a continuous feature as a categorical feature, you need to convert it to a string.
 
   
+In this example, I will use the dataset that I use for one of my paper. The dataset contains 25,404 observations with the following variables:
 
-You can use this line of code in a single cell to allow Jupyter to display the output without scrolling down (ie, it increases the output window).
+![](https://drive.google.com/uc?export=view&id=1N4NTlHdd7QoTV9ki6FHIroa5_BpztLXv)
+
+The paper aims to study the reasons behind the level of SO2 emitted in China.
 
   
+
+Now, we are ready to load the dataset into DataVizPy. I found a partial solution to filter the data before and during the analysis. I use the fantastic library [qgrid](https://github.com/quantopian/qgrid?source=post_page---------------------------). It provides an elegant way to filter the columns of a pandas dataframe. 
+
+The library uses the function `grid_search` to filter the dataset. It is based on `qgrid` 
+
 ```
-%%javascript
-
-IPython.OutputArea.auto_scroll_threshold = 9999;
+### Load interactive frame
+qgrid_widget = QuickDescriptive.grid_search(df = df_final,
+                             rows_to_display = 10)
+qgrid_widget
 ```
+
+  ![](https://drive.google.com/uc?export=view&id=1J7lo5aDYwRyf77cJpmfTzbvVkhMPr87C)
   
+If you filter the data, it will change `df_final` accordingly. To load the data on the filtered (or not filtered) dataframe, use the function `PyAnalysis`. You can move back and forth between  `grid_search` and `PyAnalysis` to narrow down the data. 
 
-In this example, I will use my own dataset that I use for one of my paper. The dataset contains 25,404 observations with the following variables:
-
- |  Variable name               |  Description                                        |
-| ---------------------------- | --------------------------------------------------- |
-| year                         |   Year:  2002 - 2007                                |
-| Post                         |  Take value 1 if year > 2005                        |
-| prov2013                     |  Province name                                      |
-| citycn                       |  City name Chinese                                  |
-| geocode4_corr                |  City code                                          |
-| CIC                          |   2 digits industry code                            |
-| IndustryName                 |  CIC industry name                                  |
-| financial_dep_china          |  Financial dependence industry Chinese Data         |
-| SO2_emissions_2005           |  SO2 emission in 2005 city level                    |
-| ttoutput                     |  Total output city-industry-year level              |
-| tso2                         |  Total SO2 city-industry-year level                 |
-| so2_intensity_value_added    | Total SO2 over value-added city-industry-year level |
-| tso2_mandate_c               |  Amount of SO2 to reduce city level                 |
-| avg_ij_o_city_mandate        |  City effort over output                            |
-| d_avg_ij_o_city_mandate      |  dummy City effort over output                      |
-| fixed_asset                  |  Total fixed asset city-industry-year level         |
-| employment                   |  Total employment city-industry-year level          |
-| FE_c_y                       |  pair group city-year                               |
-| FE_c_i                       |  pair group city industry                           |
-| FE_i_y                       |  pair group industry-year                           |
-
-  
-
-The aim of the paper is to study the reasons to reduce the level of SO2 emitted in China.
-
-  
-
-Now, we are ready to load the dataset into DataVizPy
-
-  
 ```
 QuickDescriptive.PyAnalysis(dataframe=df_final,
 
@@ -136,19 +116,22 @@ There are three arguments (the other one are details later):
 
 DataVizPy is open and looks like this:
 
-  
+- I acknowledge that tab 2 and 3 are computed from:
+	- `pandas_profiling`
+	- `jupyter_pivottablejs`
 
-![](https://drive.google.com/uc?export=view&id=1wGtQxxzFXU3KO1ZM_MMUQlmovG82gXmL)
+They did such a fantastic job, and it worths to use it!
 
-  
-
-  
-
-There are 10 different tabs with a specific use:
+![](https://drive.google.com/uc?export=view&id=1R7gxsUV493Wfdv1t2yVbKzypN0dIkBF-)
 
   
 
+There are 12 different tabs with a specific use:
+
+  
+-  Filter data
 -   Quick description
+-  Pivot Table
 -   Time Serie Plot
 -   Low dimensional
 -   High Dimensional
@@ -159,13 +142,9 @@ There are 10 different tabs with a specific use:
 -   Categorical analysis
 -   Fixed effect
 
-  
-
-  
-
 ### Quick Description
 
-This tab uses `pandas_profiling` library. If you want to know more about this library, please go [here](https://github.com/pandas-profiling/pandas-profiling). You can get the report by clicking on `Run Interact` and/or select `export` to download the report locally. Please, ensure you fill the name case.
+This tab uses `pandas_profiling` library. If you want to know more about this library, please go [here](https://github.com/pandas-profiling/pandas-profiling). You can get the report by clicking on `Run Interact` and select `export` to download the report locally. Please, ensure you fill the name case.
 
   
 
@@ -187,13 +166,17 @@ The report provides detailed statistics for each variable.
 
 The bottom of the report shows the correlation matrix, both for Pearson and Spearman.
 
-  
+### Pivot table
+
+It's one of my favorite tools. A pivot table is so much sturdy that users can extract meaningful information very quickly. I don't recommend to use a scatterplot. It will crash Jupyter
+
+![](https://drive.google.com/uc?export=view&id=1Go0UxGRW-wKbPxmj2DpZydjFL_q5zA0i)
 
 ### Time Serie plot
 
   
 
-The second tab provides a time trend for the relevant continuous variable. You have the choice to stack the plot by groups. Since the figure is based on Plotly, there is no restriction in the number of groups for each categorical variable.
+The fourth tab provides a time trend for the relevant continuous variable. You have the choice to stack the plot by groups. Since the figure is based on Plotly, there is no restriction on the number of groups for each categorical variable.
 
   
 
@@ -201,7 +184,7 @@ Each tab contains `sheedID`, `sheetName` and sometimes `folder`, with two option
 
   
 
-It gives you the opportunity to save the results in a Google Spreadsheet. For that, you need to create a new spreadsheet, with a sheet name. In the picture below, the `sheetID` is *1PcS_XXXXX* and the results will be paste in the sheet named *test_1*. The output is also available as a seaborn image and saved in the folder `temp_library`
+It allows you to save the results in a Google Spreadsheet. For that, you need to create a new spreadsheet, with a sheet name. In the picture below, the `sheetID` is *1PcS_XXXXX* and the results will be paste in the sheet named *test_1*. The output is also available as a seaborn image and saved in the folder `temp_library`
 
   
 
@@ -233,7 +216,7 @@ If you want to plot another variable and save the results to the same spreadshee
 
   
 
-Note that, a batch computation will take all the variables in the dropdown menu, computes the sum and pastes the results in the spreadsheet with the image. No group plot available. If you have dozens of variables in the dropdown menu, I do not recommend to do a batch computation. Instead, you can manually create a dictionary with the preferred variables. I'll explain later how to do it.
+Note that, a batch computation will take all the variables in the dropdown menu, computes the sum and pastes the results in the spreadsheet with the image. No group plot available. If you have dozens of variables in the dropdown menu, I do not recommend to do a batch computation. Instead, you can manually create a dictionary with the named variables. I'll explain later how to do it.
 
   
 
@@ -241,7 +224,7 @@ Note that, a batch computation will take all the variables in the dropdown menu,
 
   
 
-I define a low dimension categorical variable when the number of groups is less than 10. If above, it is cast down to high dimension. In this tab, we are interested in the distribution of a continuous variable for each group in the categorical variable. You can select to transform the continuous variable in log or not.
+I define a low dimension categorical variable when the number of groups is less than 10. If above, it is cast down to high dimension. In this tab, we are interested in the distribution of a continuous variable for each group in the categorical variable. You can select to transform the continuous variable in a log or not.
 
   
 
@@ -249,7 +232,8 @@ The output has three tabs:
 
 -   Distribution:
 
-	-   it plots the PDF and CDF for each group![](https://drive.google.com/uc?export=view&id=1OHhriHOgFiUAztazp0VLb50BkDWOvQNO)
+	-   it plots the PDF and CDF for each group
+	![](https://drive.google.com/uc?export=view&id=1OHhriHOgFiUAztazp0VLb50BkDWOvQNO)
 
 
 
@@ -272,7 +256,7 @@ The output has three tabs:
 
   
 
-This tab is very similar to the previous one except that we are checking the statistics by groups of high dimension. In our example below, we can see if the output produced by the 39 industries in China are different
+This tab is very similar to the previous one except that we are checking the statistics by groups of high dimension. In our example below, we can see if the output produced by the 39 industries in China are different.
 
   
 
@@ -294,7 +278,7 @@ The output has four tabs:
 
 -   Heatmap
 
-	-   Complement the Tukey results by showing the mean difference by groups. Do not pay attention to the color of the cells, there are under construction.
+	-   Complement the Tukey results by showing the mean difference by groups. Do not pay attention to the color of the cells; there are under construction.
 
 ![](https://drive.google.com/uc?export=view&id=1nqUtCiqY81F4uXAes3mizy9tKXM3ksGU)
 
@@ -337,13 +321,13 @@ The output has 4 tabs:
 -   rank
 
 	-   Plots the rank of the high dimensional group for each subgroup of the low dimensional variable. The rank is computed based on the mean. The slicer can be used to visualize different groups
-	-   The bottom values are those who have the largest mean, hence have a ranking close to 0.
+	-   The bottom values are those who have the most significant mean, hence have a ranking close to 0.
 
 ![](https://drive.google.com/uc?export=view&id=1mJ8z7uP0RFc_J70by9UzE9M1y9auYSFw)
 
   
 
-If the number of category in the low dimension variable is not too considerable, we can see how large the difference is with the next plot. The x-axis plots the average of the continuous variable and the y-axis plots it's rank. If the dots are widely spread, it implies a large difference both within high dimensional groups and low dimensional groups
+If the number of category in the low dimension variable is not too considerable, we can see how significant the difference is with the next plot. The x-axis plots the average of the continuous variable and the y-axis plots it's rank. If the dots are widely spread, it implies a significant difference both within high dimensional groups and low dimensional groups
 
   
 
@@ -361,11 +345,11 @@ If the number of category in the low dimension variable is not too considerable,
 
 	-   Plot the sum/mean/median difference of the continuous variables by high dimension and low dimension if the number of group in the low dimension is equal to two
 
-![](https://drive.google.com/uc?export=view&id=1PnkB96ioFfyxCw7yVdjimz08FfMJOMrT)
+![](https://drive.google.com/uc?export=view&id=1Dkc_u2mjKj5Wj1TPIZavRVDXvwd286OE)
 
   
 
-We can visualize the rank plot with a larger amount of low dimensional variable such as the year.
+We can visualize the rank plot with a more considerable amount of low dimensional variable such as the year.
 
 It makes more sense how some provinces have reduced their emission of SO2, on average.
 
@@ -381,7 +365,7 @@ The next three tabs will show the relationship between two continuous variables,
 
   
 
-The first tab of the scatterplot bundle shows the raw distribution between an X-variable and a Y-variable. It is possible to choose which variable to log-transformed; X, Y or both
+The first tab of the scatterplot bundle shows the raw distribution between an X-variable and a Y-variable. It is possible to choose which variable to log-transformed; X, Y, or both.
 
   
 
@@ -389,7 +373,7 @@ The first tab of the scatterplot bundle shows the raw distribution between an X-
 
   
 
-The computation can be slow if the data frame is large. For now, the plot uses the regular scatter plot function from Plotly. In the future, the scatter plot will rely on the `scatterg` , ie large data frame.
+The computation can be slow if the data frame is significant. 
 
   
 
@@ -405,7 +389,7 @@ The second tab of the scatter plot bundle allows adding one dimension to the sca
 
   
 
-In the example below, we want to show the relationship between the output and the emission of SO2, aggregated by the location of the province (East, Central or West) using the mean. Note that, you can change the way to aggregate the data for each variable, like mean of X and sum of Y
+In the example below, we want to show the relationship between the output and the emission of SO2, aggregated by the location of the province (East, Central, or West) using the mean. Note that, you can change the way to aggregate the data for each variable, like mean of X and sum of Y
 
   
 
@@ -445,7 +429,7 @@ The last technique to visualize the relationship between X and Y is to aggregate
 
   
 
-For instance, we can aggregate the output and emission of SO2 by cities, and color the cities according to their location in China: East, Central or Western.
+For instance, we can aggregate the output and emission of SO2 by cities, and color the cities according to their location in China: East, Central, or Western.
 
   
 
@@ -476,11 +460,11 @@ The output has three tabs:
 
   
 
-One of the last analysis we can perform on the data is a categorical analysis. In this tab, we are interested in the proportion of rows that fall between two categorical variables. To extract interesting information, we use the chi-square test and correspondence analysis. Both analyses are very correlated since they are based on the residual.
+One of the last analysis we can perform on the data is a categorical analysis. In this tab, we are interested in the proportion of rows that fall between two categorical variables. To extract new information, we use the chi-square test and correspondence analysis. Both analyses are very correlated since they are based on the residual.
 
   
 
-As an illustrative example, we can see if there is a change between the number of industries in China by provinces. Say differently, we want to know if some provinces have more industries than others and if yes, which one. If the number of categories is too large, we recommend switching to the next tab, fixed effect
+As an illustrative example, we can see if there is a change between the number of industries in China by provinces. Say differently; we want to know if some regions have more industries than others, and if yes, which one. If the number of categories is too large, we recommend switching to the next tab, fixed effect
 
   
 
@@ -489,7 +473,7 @@ The output has a large number of tabs to provide the maximum information:
 -   table_count
 
 	-   the first table gives the raw count of observations between the rows and the columns
-	-   In our example, the rows are the industries and the columns are the provinces. The matrix is quite large since there are 29 provinces and 39 industries
+	-   In our example, the rows are the industries, and the columns are the provinces. The matrix is quite significant since there are 29 provinces and 39 sectors
 	-   It is difficult to interpret, so we need to look at the other tabs
 
 ![](https://drive.google.com/uc?export=view&id=1Dq1kDweswl271gH_1I5f8c0KFhSFz9GL)
@@ -509,7 +493,7 @@ The output has a large number of tabs to provide the maximum information:
 
 -   pearson_resid
 
-	-   The Pearson residual table looks at the association between the rows and columns. It tells which row, for a given column, has a larger proportion than expected
+	-   The Pearson residual table looks at the association between the rows and columns. It tells which row, for a given column, has a more significant proportion than expected
 	-   The darker values highlight cells with a positive association between the corresponding row and column variables.
 	-   The lighter values highlight a negative association between the corresponding row and column variables.
 
@@ -535,15 +519,15 @@ If both categorical variables have more than three groups, it is possible to run
 
   
 
-We can run a CA for the industry and the year. It informs how the industries have evolved over time.
+We can run a CA for the industry and the year. It informs how the industries have evolved.
 
   
 
-The graph plots the relative association between the rows and the columns using the rows as reference. In our example, `year` is the row and `Industry` is the columns. A closer angle from the origin between the row variable and the column indicates a relative positive association. By analogy, an angle close to 180 degrees indicates a relative negative association. An angle of 90 degrees indicates no association.
+The graph plots the relative association between the rows and the columns using the rows as reference. In our example, `year` is the row, and `Industry` is the columns. A closer angle from the origin between the row variable and the column indicates a relative positive association. By analogy, an angle close to 180 degrees indicates a relative negative association. An angle of 90 degrees indicates no association.
 
   
 
-For instance, the year 2007 has relatively more observations relative to Medicine industries and no association at all with Culture, Education and Sport Activity.
+For instance, the year 2007 has relatively more observations relative to Medicine industries and no association at all with Culture, Education, and Sport Activity.
 
   
 
@@ -555,15 +539,15 @@ For instance, the year 2007 has relatively more observations relative to Medicin
 
   
 
-The last tab provides a visualization between two high dimensional categorical variables. The correspondence analysis or Chi-square analysis is difficult to interpret when the matrix is very large. To overcome this issue, we can use the fixed effect tab to map the relationship between two categorical variables.
+The last tab provides a visualization between two high dimensional categorical variables. The correspondence analysis or Chi-square analysis is challenging to interpret when the matrix is extensive. To overcome this issue, we can use the fixed effect tab to map the relationship between two categorical variables.
 
   
 
-Imagine you are interested in the relationship between the distribution of industries for all the cities in the dataset. The matrix is consequent since there are more than 250 cities in the dataset and 39 industries.
+Imagine you are interested in the relationship between the distribution of industries for all the cities in the dataset. The matrix is consequent since there are more than 250 cities in the dataset and 39 sectors.
 
   
 
-Group 1 represents the y-axis while group 2 is the x-axis.
+Group 1 represents the y-axis, while group 2 is the x-axis.
 
   
 
@@ -593,7 +577,7 @@ First of all, cities with red values have a larger count of observations than th
 
 ![](https://drive.google.com/uc?export=view&id=1s0XlshJvQyHu7MuGTratr6ACilwwTTt2)
 
-By analogy, the industry of non-mineral products looks to be evenly spread across the dataset both in by time and location
+By analogy, the industry of non-mineral products looks to be evenly spread across the dataset both in by time and location.
 
   
 
@@ -601,9 +585,12 @@ By analogy, the industry of non-mineral products looks to be evenly spread acros
 
   
 
-A top-down perspective gives us information about the number of group 2 (ie industry) for a given group 1 (ie. city). Values with more red indicate that this particular city has many industries for many years.
+A top-down perspective gives us information about the number of group 2 (i.e., industry) for a given group 1 (i.e., city). Values in red indicate that this particular city has many industries for many years.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA5NjczNDE3OCwtMTU0NTMyODc2MSwtMT
-czOTI4NjU1OCwtMzU5NjAzNDcxLDI0MTUzMzk3NiwtMzg1MjEw
-MTc0LDkyMzEzMjcwMiwzNjYyMDk4M119
+eyJoaXN0b3J5IjpbLTYwMzI0ODY5NCw2NjA0MTE0OCwtMTQ2Mz
+Y1ODI2NiwtNjc3NzA0NDMyLC01MTE2NDE4MjgsLTkyNjg5NTg4
+MSwxNjk5OTcwNDgxLC0xNTY2NDczMzQzLDEwOTY3MzQxNzgsLT
+E1NDUzMjg3NjEsLTE3MzkyODY1NTgsLTM1OTYwMzQ3MSwyNDE1
+MzM5NzYsLTM4NTIxMDE3NCw5MjMxMzI3MDIsMzY2MjA5ODNdfQ
+==
 -->
