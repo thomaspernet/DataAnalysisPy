@@ -7,7 +7,7 @@
 DataAnalysisPy is a simple tool to help the Exploratory Data Analysis directly from Jupyter Notebook and Jupyter Lab. 🚀
 
 Data preparation is a tedious and time-consuming task. In most of the case, we need to connect our data to lots of data sources, create new variables, and eliminate unwanted observations. It is a crucial step in a data project. A good practice will be to check if all of the wranglings do not distort too much the data.
-  
+
 
 Once the dataset is ready, we need to spend a tremendous time understanding and investigating the data. Ignoring this step cannot bring fruitful results. If our task is to use the dataset to make predictions, then we first need to discover the patterns that the algorithms will extrapolate and generalize.
 
@@ -70,7 +70,7 @@ Open a Jupyter notebook, or Jupyter lab, and install the library.
 
 Then load your data. Make sure the data have the right format. For instance, if you want to treat a continuous feature as a categorical feature, you need to convert it to a string.
 
-  
+
 In this example, I will use the dataset that I use for one of my paper. The dataset contains 25,404 observations with the following variables:
 
 ![](https://drive.google.com/uc?export=view&id=1N4NTlHdd7QoTV9ki6FHIroa5_BpztLXv)
@@ -91,7 +91,7 @@ qgrid_widget
 ```
 
   ![](https://drive.google.com/uc?export=view&id=1J7lo5aDYwRyf77cJpmfTzbvVkhMPr87C)
-  
+
 If you filter the data, it will change `df_final` accordingly. To load the data on the filtered (or not filtered) dataframe, use the function `PyAnalysis`. You can move back and forth between  `grid_search` and `PyAnalysis` to narrow down the data. 
 
 ```
@@ -103,7 +103,7 @@ QuickDescriptive.PyAnalysis(dataframe=df_final,
 
 cdr = False)
 ```
-  
+
 
 There are three arguments (the other one are details later):
 
@@ -128,7 +128,7 @@ They did such a fantastic job, and it worths to use it!
 
 There are 12 different tabs with a specific use:
 
-  
+
 -  Filter data
 -   Quick description
 -  Pivot Table
@@ -250,7 +250,7 @@ The output has three tabs:
 ![](https://drive.google.com/uc?export=view&id=1W0E9StVghhwYSPSHWU0T5NI7UMQogf6v)
 
 
-  
+
 
 ### High dimension
 
@@ -586,11 +586,3 @@ By analogy, the industry of non-mineral products looks to be evenly spread acros
   
 
 A top-down perspective gives us information about the number of group 2 (i.e., industry) for a given group 1 (i.e., city). Values in red indicate that this particular city has many industries for many years.
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYwMzI0ODY5NCw2NjA0MTE0OCwtMTQ2Mz
-Y1ODI2NiwtNjc3NzA0NDMyLC01MTE2NDE4MjgsLTkyNjg5NTg4
-MSwxNjk5OTcwNDgxLC0xNTY2NDczMzQzLDEwOTY3MzQxNzgsLT
-E1NDUzMjg3NjEsLTE3MzkyODY1NTgsLTM1OTYwMzQ3MSwyNDE1
-MzM5NzYsLTM4NTIxMDE3NCw5MjMxMzI3MDIsMzY2MjA5ODNdfQ
-==
--->
