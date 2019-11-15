@@ -4048,7 +4048,7 @@ def categorical(df,
         #f = IntProgress(min=0, max=max_, description='Loading:')
         #display(f)
 
-        for key, value in tqdm(dic_multiple['var_columns'].items()):
+        for key, value in dic_multiple['var_columns'].items():
             variable_y = value['name']
             column_name = value['name']
             #f.value += 1
