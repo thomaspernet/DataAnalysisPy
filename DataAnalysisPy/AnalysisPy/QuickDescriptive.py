@@ -4006,7 +4006,8 @@ def saveToDriveCategorical(cdr=False,
 
     # result_test
     cdr.add_data_to_spreadsheet(
-        data= pd.DataFrame(table_output['result_test']),
+        data= pd.DataFrame(table_output['result_test'],
+		 colums = table_output['header_chi']),
         sheetID=sheetID,
         sheetName=sheetName,
 		detectRange = False,
@@ -4014,6 +4015,7 @@ def saveToDriveCategorical(cdr=False,
         #headers=table_output['header_chi']
 		)
 
+	print([table_output['name_column']],table_output['ranges']['range_name_column'])
     # Name column
     cdr.add_data_to_spreadsheet(
         data=[table_output['name_column']],
