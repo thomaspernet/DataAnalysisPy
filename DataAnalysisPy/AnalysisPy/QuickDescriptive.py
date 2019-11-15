@@ -4228,7 +4228,8 @@ def categorical(df,
             summary_ca = widgets.Output()
             tab = widgets.Tab([summary_raw, summary_proportion,
                                summary_proportion_col, summary_pearson,
-                               summary_contribution, summary_result, summary_ca])
+                               summary_contribution, summary_result,
+							    summary_ca])
             tab.set_title(6, 'Correspondence Anasylis')
             with summary_ca:
                 display(fig_2['figure'])
