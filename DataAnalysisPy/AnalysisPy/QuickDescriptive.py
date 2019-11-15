@@ -4052,7 +4052,7 @@ def categorical(df,
             variable_y = value['name']
             column_name = value['name']
             #f.value += 1
-            for key, value in dic_multiple['var_rows'].items():
+            for key, value in tqdm(dic_multiple['var_rows'].items()):
                 variable_x = value['name']
 
                 for key, value in dic_multiple['var_columns'].items():
