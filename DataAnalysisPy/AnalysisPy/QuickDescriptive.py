@@ -4105,7 +4105,7 @@ def categorical(df,
                                        headers_data=headers_data)
 
         #f.value += 1
-	else:
+    else:
     #if verbose:
         regex = r"^[^-]+"
         regex_1 = r"\-(.*)"
