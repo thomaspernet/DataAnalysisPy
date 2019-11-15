@@ -4015,7 +4015,8 @@ def saveToDriveCategorical(cdr=False,
         #headers=table_output['header_chi']
 		)
 
-	print([table_output['name_column']],table_output['ranges']['range_name_column'])
+    print([table_output['name_column']],
+	table_output['ranges']['range_name_column'])
     # Name column
     cdr.add_data_to_spreadsheet(
         data=[table_output['name_column']],
