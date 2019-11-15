@@ -4018,7 +4018,7 @@ def saveToDriveCategorical(cdr=False,
     # Name column
     cdr.add_data_to_spreadsheet(
         data=pd.DataFrame(table_output['name_column'],
-		columns = 'Var'),
+		columns = ['Variable']),
         sheetID=sheetID,
         sheetName=sheetName,
 		detectRange = False,
