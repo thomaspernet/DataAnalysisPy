@@ -29,7 +29,7 @@ import matplotlib
 matplotlib.use('Agg')
 sns.set()
 #from plotly import tools
-
+from tqdm import tqdm_notebook as tqdm
 
 # need to activate
 # jupyter nbextension enable --py --sys-prefix widgetsnbextension
@@ -4036,8 +4036,7 @@ def categorical(df,
                 folder=False,
                 move_to_drive=False,
                 move_to_drive_batch=False,
-                cdr=False,
-                verbose=False):
+                cdr=False):
     """
     """
 
@@ -4046,13 +4045,13 @@ def categorical(df,
         max_ = len(dic_multiple['var_columns']) + \
             len(dic_multiple['var_rows'])
         # instantiate the bar
-        f = IntProgress(min=0, max=max_, description='Loading:')
-        display(f)
+        #f = IntProgress(min=0, max=max_, description='Loading:')
+        #display(f)
 
-        for key, value in dic_multiple['var_columns'].items():
+        for key, value in tqdm(dic_multiple['var_columns'].items()):
             variable_y = value['name']
             column_name = value['name']
-            f.value += 1
+            #f.value += 1
             for key, value in dic_multiple['var_rows'].items():
                 variable_x = value['name']
 
@@ -4105,8 +4104,9 @@ def categorical(df,
                                        column_name=column_name,
                                        headers_data=headers_data)
 
-        f.value += 1
-    if verbose:
+        #f.value += 1
+	else:
+    #if verbose:
         regex = r"^[^-]+"
         regex_1 = r"\-(.*)"
         g1 = re.search(regex, variables)[0]
@@ -4480,7 +4480,8 @@ def PyAnalysis(dataframe, automatic=True, Date=False, cdr=False,
 
     tab = widgets.Tab([wid_gridshow, wid_quick, wid_pivottable,
                        wid_ts, wid_cont, wid_high,
-                       wid_highLow, wid_scatter, wid_scatter1, wid_scatter2, wid_cat, wid_fe])
+                       wid_highLow, wid_scatter, wid_scatter1, wid_scatter2,
+					    wid_cat, wid_fe])
 
     tab.set_title(0, 'Filter dataset')
     tab.set_title(1, 'Quick description')
