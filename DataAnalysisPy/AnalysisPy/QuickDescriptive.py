@@ -3931,13 +3931,13 @@ def saveToDriveCategorical(cdr=False,
     }
 
     table_output = {
-        'table_count': slide.to_numpy().tolist(),
-        'table_total': df_total.to_numpy().tolist(),
+        'table_count': slide,
+        'table_total': df_total,
         'table_proportion_rows':
-            slide_perc_rows.to_numpy().tolist(),
-            'table_proportion_col': slide_perc_col.to_numpy().tolist(),
-            'pearson_resid': pearson_resid_df.to_numpy().tolist(),
-            'contribution': contribution_df.to_numpy().tolist(),
+            slide_perc_rows,
+            'table_proportion_col': slide_perc_col,
+            'pearson_resid': pearson_resid_df,
+            'contribution': contribution_df,
             'result_test': l_resut,
             'ranges': dic_range,
             'header_data': list(headers_data),
