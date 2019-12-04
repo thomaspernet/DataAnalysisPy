@@ -4050,7 +4050,7 @@ def categorical(df,
         #display(f)
 
         for key, value in dic_multiple['var_columns'].items():
-            time.sleep(timesleep)
+            time.sleep(int(timesleep))
             variable_y = value['name']
             column_name = value['name']
             #f.value += 1
@@ -4295,7 +4295,7 @@ def select_cat_eventHandler(df,
                        folder='',
                        move_to_drive=False,
                        move_to_drive_batch=False,
-                       timesleep = 0, 
+                       timesleep = '0',
                        cdr=fixed(cdr),
                        verbose=fixed(True))
 
