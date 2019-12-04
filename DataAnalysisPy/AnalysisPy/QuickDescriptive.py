@@ -4026,7 +4026,7 @@ def saveToDriveCategorical(cdr=False,
         #headers=['name_column']
 		)
 
-
+import time
 def categorical(df,
                 dic_multiple,
                 variables=False,
@@ -4036,6 +4036,7 @@ def categorical(df,
                 folder=False,
                 move_to_drive=False,
                 move_to_drive_batch=False,
+                timesleep = False,
                 cdr=False):
     """
     """
@@ -4049,6 +4050,7 @@ def categorical(df,
         #display(f)
 
         for key, value in dic_multiple['var_columns'].items():
+            time.sleep(timesleep)
             variable_y = value['name']
             column_name = value['name']
             #f.value += 1
@@ -4293,6 +4295,7 @@ def select_cat_eventHandler(df,
                        folder='',
                        move_to_drive=False,
                        move_to_drive_batch=False,
+                       timesleep = 0, 
                        cdr=fixed(cdr),
                        verbose=fixed(True))
 
